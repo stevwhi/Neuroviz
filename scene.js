@@ -1,6 +1,5 @@
-import { Scene, PerspectiveCamera, WebGLRenderer, AmbientLight } from 'three';
+import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
 
 //create scene
 const scene = new THREE.Scene();
@@ -30,6 +29,8 @@ gltfLoader.load(
         console.error('An error happened', error);
     }
     );
+
+
 
 
 //functions--------------------------------------------------------
