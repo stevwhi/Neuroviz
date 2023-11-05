@@ -31,21 +31,34 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 
 // Set the position of the light (adjust the values as needed)
 directionalLight.position.set(0, 1, 0);
-
 // Add the light to the scene
 scene.add(directionalLight);
+
+//interactivity
+controls = new OrbitControls(camera, renderer.domElement);
+controls.minDistance = 5;
+controls.maxDistance = 25;
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+
+
     //brain
     const objLoader = new OBJLoader();
-        objLoader.load('/public/Brain/obj/Brain1.obj', function (object) {
+        objLoader.load('/public/Brain/obj/originBrain5.obj', function (object) {
+            console.log('Brain model loaded successfully');
             object.position.set(0, 0, 0);
             object.scale.set(10, 10, 10); 
             scene.add(object);
 
+            // This line would lock the camera's orbit around the center (0, 0, 0)
+            controls.target.set(0, 0, 0);
+            controls.update();
+
         });
 
-    //interactivity
-    controls = new OrbitControls(camera, renderer.domElement);
+    
 }
+
 
 function animate() {
     requestAnimationFrame(animate);
