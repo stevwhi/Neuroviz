@@ -62,6 +62,7 @@ function init() {
         controls.update();
 
             object.traverse(function (child) {
+                console.log(child.name)
                 if (child.name === "Cerebrum") {
                     cerebrum = child; // Store the cerebrum reference
                     cerebrum.material = new THREE.MeshPhongMaterial({
