@@ -1,26 +1,25 @@
-body 
-{
-    font-family: monospace;   
-    background-color: #f5f5f6;
+/* This styles your Three.js container */
+#threejs-scene-container {
+    position: relative; /* Make this relative so that absolute positioning of children is relative to this container */
+    width: 100%;
     height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    background: #000; /* Optional: in case your scene takes a moment to load */
+  }
 
-.dragDropArea 
-{
-    border: 4.5px dashed #ccd;
-    background-color: #ffe;
-    width: 290px;
-    height: 140px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
+  /* This styles the interaction panel */
+  #interaction-panel {
+    position: absolute; /* Position your panel absolutely so it floats over the Three.js scene */
+    top: 10px; /* Adjust this value to place it where you want */
+    right: 10px; /* Adjust this value to place it where you want */
+    width: 300px; /* Width of the panel */
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    border-radius: 8px;
+    /* Add more styles as needed */
+  }
 
-.dragDropArea:hover 
-{
-    background-color: #e9e9e8;
-}
+  /* Style for the slider */
+  #opacity-slider {
+    width: 100%; /* Make the slider expand to the width of the panel */
+    /* Add more styles as needed */
+  }
