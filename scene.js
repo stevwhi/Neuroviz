@@ -3,7 +3,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 let scene, camera, renderer, controls;
-let cerebrum;
+let cerebralCortex, subcorticalCortex;
+let raycaster, mouse;
+
+let cerebralCortexAreasNames = ['frontalLobe', 'insularCortex', 'limbicLobe', 'occipitalLobe', 'parietalLobe', 'temporalLobe'];
+let subcorticalCortexAreasNames = ['basalGanglia', 'brainStem', 'cerebellum', 'commisuralFibres', 'hypothalamus', 'limbicStructures', 'opticalSystem', 'thalamus', 'ventricularSystem'];
+let cerebralCortexAreas = [];
+let subcorticalCortexAreas = [];
+
 
 init();
 animate();
@@ -42,15 +49,19 @@ function init() {
 
     //interactivity
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.minDistance = 5;
+    controls.minDistance = 1;
     controls.maxDistance = 25;
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
+    document.addEventListener('mousemove', onMouseMove, false);
+
 
     // brain
     const gltfLoader = new GLTFLoader();
-    gltfLoader.load('/public/Brain/gltf/originBrain.glb', function (gltf) {
+    gltfLoader.load('/public/Brain/gltf/originBrain(29_11_23).3.glb', function (gltf) {
         const object = gltf.scene;
         console.log('Brain model loaded successfully');
         object.position.set(0, 0, 0);
@@ -62,35 +73,47 @@ function init() {
         controls.update();
 
             object.traverse(function (child) {
-                console.log(child.name)
-                if (child.name === "Cerebrum") {
-                    cerebrum = child; // Store the cerebrum reference
-                    cerebrum.material = new THREE.MeshPhongMaterial({
+                if (child.name === "cerebralCortex") {
+                    cerebralCortex = child; // Store the cerebralCortex reference
+
+                    cerebralCortex.material = new THREE.MeshPhongMaterial({
                         color: 0x555555, // Adjust color as needed
                         transparent: true,
-                        opacity: 1 // Start fully opaque
+                        opacity: 1, // Start fully opaque
                     });
-                    cerebrum.material.needsUpdate = true;
-        
-                    // Apply material to all cerebrum's children
-                    cerebrum.traverse(function (descendant) {
+                    
+                    cerebralCortex.traverse(function (descendant) {
                         if (descendant.isMesh) {
-                            descendant.material = cerebrum.material;
+                            descendant.material = new THREE.MeshPhongMaterial({
+                                color: 0x555555, // Adjust color as needed
+                                transparent: true,
+                                opacity: 1, // Start fully opaque
+                            });
                         }
-                    });
+
+                        if (cerebralCortexAreasNames.includes(descendant.name)) {
+                            cerebralCortexAreas.push(descendant);
+                            
+                        }
+                    });  
+                } else if (child.name === "subcorticalCortex") {
+                    subcorticalCortex = child; // Store the subcorticalCortex reference
+
+                    subcorticalCortex.traverse(function (descendant) {
+                        if(subcorticalCortexAreasNames.includes(descendant.name)){
+                            
+                            subcorticalCortexAreas.push(descendant);
+                        }
+                    });   
                 }
             });
+
 }, undefined, function (error) {
     console.error('An error happened while loading the model:', error);
 });
 
-document.getElementById('opacity-slider').addEventListener('input', function (event) {
-    console.log('Slider value:', event.target.value);
-    let value = event.target.value;
-    setBrainOpacity(value);
-});
-}
 
+}
 
 function animate() {
     requestAnimationFrame(animate);
@@ -98,16 +121,86 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById('opacity-slider').addEventListener('input', function (event) {
+        console.log('Slider value:', event.target.value);
+        let value = event.target.value;
+        setBrainOpacity(value);
+    });
+});
+
 function setBrainOpacity(opacity) {
-    if (cerebrum) {
-        cerebrum.material.opacity = opacity;
-        cerebrum.traverse(function (descendant) {
+    if (cerebralCortex) {
+        cerebralCortex.material.opacity = opacity;
+        cerebralCortex.traverse(function (descendant) {
             if (descendant.isMesh) {
                 descendant.material.opacity = opacity;
+                descendant.material.needsUpdate = true;
             }
         });
     }
 }
 
 
+function onMouseMove(event) {
+    // Calculate mouse position in normalized device coordinates
+    // (-1 to +1) for both components
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    
+
+    checkIntersection();
+}
+
+function checkIntersection() {
+    raycaster.setFromCamera(mouse, camera);
+
+    const isCortexOpaque = cerebralCortex.material.opacity >= 0.5;
+    const areas = isCortexOpaque ? cerebralCortexAreas : subcorticalCortexAreas;
+
+    unhighlightAll(areas);
+
+    // Perform raycasting on all descendants
+    const intersects = raycaster.intersectObjects(scene.children, true);
+    if (intersects.length > 0) {
+        const intersected = intersects[0].object;
+
+        // Find the parent area corresponding to the intersected mesh
+        let parentArea = findParentArea(intersected, areas);
+
+        console.log(parentArea.name);
+        
+        if (parentArea) {
+            parentArea.traverse(function(child) {
+                if (child.isMesh) {
+                    child.material.color.set(0xff0000); // Highlight the child mesh
+                }
+            });
+        }
+    }
+
+    
+}
+
+function findParentArea(intersected, areas) {
+    while (intersected) {
+        if (areas.includes(intersected)) {
+            return intersected;
+        }
+        intersected = intersected.parent;
+    }
+    return null;
+}
+
+function unhighlightAll(areas) {
+    areas.forEach(area => {
+        area.traverse(function(child) {
+            if (child.isMesh && child.material) {
+                child.material.color.set(0x555555); // Reset to original color
+            }
+        });
+    });
+}
 
