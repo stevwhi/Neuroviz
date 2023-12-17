@@ -17,7 +17,7 @@ animate();
 
 function init() {
     scene = new THREE.Scene();
-
+ 
     //camera
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
@@ -93,7 +93,7 @@ function init() {
 
                         if (cerebralCortexAreasNames.includes(descendant.name)) {
                             cerebralCortexAreas.push(descendant);
-                            
+
                         }
                     });  
                 } else if (child.name === "subcorticalCortex") {
@@ -101,20 +101,23 @@ function init() {
 
                     subcorticalCortex.traverse(function (descendant) {
                         if(subcorticalCortexAreasNames.includes(descendant.name)){
-                            
+                            const colour = getSubcorticalColour(descendant.name);
+                            assignSubcorticalColour(descendant, colour);
+
                             subcorticalCortexAreas.push(descendant);
+                           
                         }
                     });   
                 }
-            });
 
+                
+            });
 }, undefined, function (error) {
     console.error('An error happened while loading the model:', error);
 });
 
 
 }
-
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
@@ -160,21 +163,23 @@ function checkIntersection() {
     const isCortexOpaque = cerebralCortex.material.opacity >= 0.5;
     const areas = isCortexOpaque ? cerebralCortexAreas : subcorticalCortexAreas;
 
+
     unhighlightAll(areas);
 
     // Perform raycasting on all descendants
-    const intersects = raycaster.intersectObjects(scene.children, true);
+    const intersects = raycaster.intersectObjects(scene.children, false);
     if (intersects.length > 0) {
         const intersected = intersects[0].object;
 
         // Find the parent area corresponding to the intersected mesh
         let parentArea = findParentArea(intersected, areas);
 
-        console.log(parentArea.name);
         
-        if (parentArea) {
+        
+        if (intersected) {
+            
             parentArea.traverse(function(child) {
-                if (child.isMesh) {
+                if (child.isMesh && child.material) {
                     child.material.color.set(0xff0000); // Highlight the child mesh
                 }
             });
@@ -185,8 +190,13 @@ function checkIntersection() {
 }
 
 function findParentArea(intersected, areas) {
+    console.log("Areas array:", areas.map(a => a.name));
+
     while (intersected) {
+        console.log("Checking parent area for:", intersected.name);
+
         if (areas.includes(intersected)) {
+            console.log("Found parent area:", intersected.name);
             return intersected;
         }
         intersected = intersected.parent;
@@ -202,5 +212,35 @@ function unhighlightAll(areas) {
             }
         });
     });
+}
+
+function assignSubcorticalColour(subcorticalArea, colour) {
+    
+    subcorticalArea.traverse(function (descendant) {
+        if (descendant.isMesh) {
+            descendant.material = new THREE.MeshPhongMaterial({
+                color: colour,
+                transparent: false,
+                opacity: 1,
+            });
+
+            descendant.material.needsUpdate = true;
+        }
+    });
+}
+
+function getSubcorticalColour(areaName) {
+    const colors = {
+        basalGanglia: 0x555555,       // Dark Gray
+        brainStem: 0xA0522D,          // Light Brown
+        cerebellum: 0x8FBC8F,         // Greenish-Gray
+        commisuralFibres: 0xADD8E6,   // Light Blue
+        hypothalamus: 0x800080,       // Purple
+        limbicStructures: 0xFFB6C1,   // Soft Pink
+        opticalSystem: 0xFFFF00,      // Bright Yellow
+        thalamus: 0xFFA500,           // Orange
+        ventricularSystem: 0x87CEEB   // Sky Blue
+    };
+    return colors[areaName] || 0x888888; // Default color if no match is found
 }
 
