@@ -14,6 +14,7 @@ class ControlsManager {
         this.controls.maxDistance = 25;
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
+        this.controls.target.set(0, 0, 0);
     }
 
     setupSliderListener() {
@@ -28,6 +29,10 @@ class ControlsManager {
 
     update() {
         this.controls.update();
+    }
+    
+    printTarget(){
+        console.log(this.controls.target);
     }
 }
 
