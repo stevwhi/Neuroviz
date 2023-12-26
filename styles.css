@@ -23,3 +23,18 @@
     width: 100%; /* Make the slider expand to the width of the panel */
     /* Add more styles as needed */
   }
+
+  #info-box {
+    position: fixed; /* Fixed position relative to the viewport */
+    top: 10px;       /* Distance from the top of the viewport */
+    left: 10px;      /* Distance from the left of the viewport */
+    width: 300px;    /* Fixed width */
+    height: 150px;   /* Fixed height */
+    overflow: auto;  /* Enable scrolling for overflow content */
+    background-color: white;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: none;   /* Hidden by default */
+    z-index: 100;    /* Ensure it's above other elements */
+}

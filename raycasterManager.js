@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import brainInfo from './brainInfo';
 
 class RaycasterManager {
     
@@ -87,31 +88,47 @@ class RaycasterManager {
         this.brainModel.subcorticalCortexAreas.find(area => area.includes(intersected));
 
         if (parentArea) {
-        let centroid = new THREE.Vector3(0, 0, 0);
-        let tempPos = new THREE.Vector3();
+            let centroid = new THREE.Vector3(0, 0, 0);
+            let tempPos = new THREE.Vector3();
 
-        parentArea.forEach(mesh => {
-            mesh.getWorldPosition(tempPos); // Get the world position of each mesh
-            centroid.add(tempPos); // Add it to the centroid
-        });
+            parentArea.forEach(mesh => {
+                mesh.getWorldPosition(tempPos); // Get the world position of each mesh
+                centroid.add(tempPos); // Add it to the centroid
+            });
 
-        centroid.divideScalar(parentArea.length); // Average the position
+            centroid.divideScalar(parentArea.length); // Average the position
 
-        this.targetPosition.copy(centroid);
+            this.targetPosition.copy(centroid);
 
-        // Use a smaller distance value, appropriate for the scale of your scene
-        const distance = 0.3; // Adjust this value based on your model's scale
+            // Use a smaller distance value, appropriate for the scale of your scene
+            const distance = 0.3; // Adjust this value based on your model's scale
 
-        // Calculate the direction vector from the centroid towards the current camera position
-        const direction = new THREE.Vector3().subVectors(this.sceneSetup.camera.position, centroid).normalize();
+            // Calculate the direction vector from the centroid towards the current camera position
+            const direction = new THREE.Vector3().subVectors(this.sceneSetup.camera.position, centroid).normalize();
 
-        // Set the new camera position
-        this.cameraTargetPosition.copy(centroid).addScaledVector(direction, distance);
+            // Set the new camera position
+            this.cameraTargetPosition.copy(centroid).addScaledVector(direction, distance);
 
-        // Disable user interaction with orbit controls during transition
-        this.controlsManager.controls.enabled = false;
-        this.isTransitioning = true;
+            // Disable user interaction with orbit controls during transition
+            this.controlsManager.controls.enabled = false;
+            this.isTransitioning = true;
+
+            // InfoBox functionality
+            // The first element of the parentArea array is the area object itself
+            const areaObject = parentArea[0];
+            const areaName = areaObject.name; // Get the name from the area object
+            const areaInfo = brainInfo[areaName]; // Fetch information based on area name
+            if (areaInfo) {
+                this.displayInfoBox(areaInfo);
+            }
+
         } 
+    }
+
+    displayInfoBox(areaInfo) {
+        const infoBox = document.getElementById('info-box');
+        infoBox.innerHTML = `<h1>${areaInfo.title}</h1><p>${areaInfo.description}</p>`;
+        infoBox.style.display = 'block';
     }
 
     update() {

@@ -29,7 +29,7 @@ class BrainModel {
             if (child.name === "cerebralCortex") {
                 this.cerebralCortex = child;
                 child.children.forEach((area, index) => {
-                    this.cerebralCortexAreas[index] = [];
+                    this.cerebralCortexAreas[index] = [area];
                     area.traverse((mesh) => {
                         this.assignBrainColour(mesh, true);
                         if (mesh.isMesh) {
@@ -40,7 +40,7 @@ class BrainModel {
             } else if (child.name === "subcorticalCortex") {
                 this.subcorticalCortex = child;
                 child.children.forEach((area, index) => {
-                    this.subcorticalCortexAreas[index] = [];
+                    this.subcorticalCortexAreas[index] = [area];
                     area.traverse((mesh) => {
                         this.assignBrainColour(mesh, false);
                         if (mesh.isMesh) {

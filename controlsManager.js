@@ -11,7 +11,7 @@ class ControlsManager {
 
     initControls() {
         this.controls.minDistance = 0;
-        this.controls.maxDistance = 25;
+        this.controls.maxDistance = 0.75;
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.target.set(0, 0, 0);
