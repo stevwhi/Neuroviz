@@ -38,11 +38,15 @@ class RaycasterManager {
 
     checkIntersection(eventType) {
         this.raycaster.setFromCamera(this.mouse, this.sceneSetup.camera);
-        
-        // Get all meshes to test for intersection
-        const meshes = this.brainModel.cerebralCortexOpacity >= 0.5 ?
-                       this.brainModel.cerebralCortexAreas.flat() :
-                       this.brainModel.subcorticalCortexAreas.flat();
+    
+        // Always include subcortical areas
+        let meshes = [...this.brainModel.subcorticalCortexAreas.flat()];
+
+        // Conditionally include cerebral cortex areas based on opacity
+        if (this.brainModel.cerebralCortexOpacity >= 0.5) {
+            meshes.push(...this.brainModel.cerebralCortexAreas.flat());
+        }
+
         const intersects = this.raycaster.intersectObjects(meshes, true);
         
         if (intersects.length > 0) {
