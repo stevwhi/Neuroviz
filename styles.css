@@ -26,7 +26,7 @@
 
   #info-box {
     position: fixed; /* Fixed position relative to the viewport */
-    top: 10px;       /* Distance from the top of the viewport */
+    top: 60px;       /* Distance from the top of the viewport */
     left: 10px;      /* Distance from the left of the viewport */
     width: 300px;    /* Fixed width */
     height: 150px;   /* Fixed height */
@@ -36,5 +36,26 @@
     border: 1px solid black;
     border-radius: 5px;
     display: none;   /* Hidden by default */
-    z-index: 100;    /* Ensure it's above other elements */
+    z-index: 95;    /* Ensure it's above other elements */
+}
+
+#search-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 105;
+}
+
+#brain-area-search {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#search-button {
+  padding: 5px 10px;
+  margin-left: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
 }

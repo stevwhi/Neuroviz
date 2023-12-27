@@ -7,17 +7,65 @@ class RaycasterManager {
         this.sceneSetup = sceneSetup;
         this.brainModel = brainModel;
         this.controlsManager = controlsManager;
+        
+
+        //search bar
+        this.setupSearchBar();
+        
+        //raycasting
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
-
         this.setupMouseListeners();
-
         this.isTransitioning = false;
         this.targetPosition = new THREE.Vector3();
         this.cameraTargetPosition = new THREE.Vector3(); 
         this.transitionSpeed = 0.075; // Adjust this value as needed
-        
     }
+
+    //search bar----------------------------------------------------------------------------------
+    setupSearchBar() {
+        const searchBar = document.getElementById('brain-area-search');
+        const searchButton = document.getElementById('search-button');
+
+        searchBar.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.handleSearch(e.target.value);
+            }
+        });
+
+        searchButton.addEventListener('click', () => {
+            this.handleSearch(searchBar.value);
+        });
+
+        //autocomplete logic below here
+    }
+
+    handleSearch(searchTerm) {
+        const normalizedSearchTerm = this.normalizeString(searchTerm);
+        const areaObject = this.findAreaObjectByName(normalizedSearchTerm);
+        if (areaObject) {
+            this.focusOnArea(areaObject);
+            this.highlightIntersected(areaObject);
+        } else {
+            // Show error popup if area is not found
+            alert("Error: Brain area not found.");
+        }
+    }
+
+
+    findAreaObjectByName(normalizedName) {
+        let foundArea = this.brainModel.cerebralCortexAreas.concat(this.brainModel.subcorticalCortexAreas)
+            .find(area => this.normalizeString(area[0].name) === normalizedName);
+        return foundArea ? foundArea[0] : null;
+    }
+
+    // New utility method to normalize strings
+    normalizeString(str) {
+        return str.toLowerCase().replace(/\s+/g, ''); // Convert to lower case and remove spaces
+    }
+
+
+    //raycasting----------------------------------------------------------------------------------
 
     setupMouseListeners() {
         document.addEventListener('mousemove', (event) => {
@@ -157,6 +205,7 @@ class RaycasterManager {
             }
         }
     }
+
 }
 
 export default RaycasterManager;
