@@ -12,27 +12,34 @@
 </head>
 <body>
     <!-- Three.js scene -->
-  <div id="threejs-scene-container">
-    <!-- Your Three.js scene will attach to this container -->
-  </div>
+    <div id="threejs-scene-container">
+        <!-- Your Three.js scene will attach to this container -->
+    </div>
 
-  <!-- Interaction panel -->
-  <div id="interaction-panel">
-    <!-- Opacity slider for the cerebrum -->
-    <input id="opacity-slider" type="range" min="0" max="1" step="0.01" value="1">
-    <!-- Add other interactive controls here as needed -->
-  </div>
+    <!-- Interaction panel -->
+    <div id="interaction-panel">
+        <!-- Opacity slider for the cerebrum -->
+        <input id="opacity-slider" type="range" min="0" max="1" step="0.01" value="1">
 
-  <div id="search-container">
-    <input type="text" id="brain-area-search" placeholder="Search brain areas..." autocomplete="off">
-    <button id="search-button">Search</button>
-  </div>
+        <div id="clipping-controls">
+          <label>X-axis: <input type="range" id="clipX" min="-0.07" max="0.07" step="0.001" value="0.07"></label>
+          <label>Y-axis: <input type="range" id="clipY" min="-0.10" max="0.07" step="0.001" value="0.07"></label>
+          <label>Z-axis: <input type="range" id="clipZ" min="-0.09" max="0.1" step="0.001" value="0.1"></label>
+        </div>
 
-  <!-- Information Box -->
-  <div id="info-box">
-    <!-- Brain area information will be displayed here -->
-  </div>
+        <!-- Other interactive controls as needed -->
+    </div>
 
-  <script type="module" src="main.js"></script>
+    <div id="search-container">
+        <input type="text" id="brain-area-search" placeholder="Search brain areas..." autocomplete="off">
+        <button id="search-button">Search</button>
+    </div>
+
+    <!-- Information Box -->
+    <div id="info-box">
+        <!-- Brain area information will be displayed here -->
+    </div>
+
+    <script type="module" src="main.js"></script>
 </body>
 </html>

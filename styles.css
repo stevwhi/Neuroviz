@@ -1,42 +1,48 @@
 /* This styles your Three.js container */
 #threejs-scene-container {
-    position: relative; /* Make this relative so that absolute positioning of children is relative to this container */
-    width: 100%;
-    height: 100vh;
-    background: #000; /* Optional: in case your scene takes a moment to load */
-  }
+  position: relative; /* Make this relative so that absolute positioning of children is relative to this container */
+  width: 100%;
+  height: 100vh;
+  background: #000; /* Optional: in case your scene takes a moment to load */
+}
 
-  /* This styles the interaction panel */
-  #interaction-panel {
-    position: absolute; /* Position your panel absolutely so it floats over the Three.js scene */
-    top: 10px; /* Adjust this value to place it where you want */
-    right: 10px; /* Adjust this value to place it where you want */
-    width: 300px; /* Width of the panel */
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
-    border-radius: 8px;
-    /* Add more styles as needed */
-  }
+/* This styles the interaction panel */
+#interaction-panel {
+  position: absolute; /* Position your panel absolutely so it floats over the Three.js scene */
+  top: 10px; /* Adjust this value to place it where you want */
+  right: 10px; /* Adjust this value to place it where you want */
+  width: 300px; /* Width of the panel */
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+  border-radius: 8px;
+  z-index: 100; /* Ensure it's on top */
+}
 
-  /* Style for the slider */
-  #opacity-slider {
-    width: 100%; /* Make the slider expand to the width of the panel */
-    /* Add more styles as needed */
-  }
+/* Style for the sliders */
+#opacity-slider, #clipX, #clipY, #clipZ {
+  width: 100%; /* Make the sliders expand to the width of the panel */
+  margin-bottom: 10px; /* Space between sliders */
+}
 
-  #info-box {
-    position: fixed; /* Fixed position relative to the viewport */
-    top: 60px;       /* Distance from the top of the viewport */
-    left: 10px;      /* Distance from the left of the viewport */
-    width: 300px;    /* Fixed width */
-    height: 150px;   /* Fixed height */
-    overflow: auto;  /* Enable scrolling for overflow content */
-    background-color: white;
-    padding: 10px;
-    border: 1px solid black;
-    border-radius: 5px;
-    display: none;   /* Hidden by default */
-    z-index: 95;    /* Ensure it's above other elements */
+/* Style for labels */
+#interaction-panel label {
+  display: block; /* Make each label occupy its own line */
+  margin-bottom: 5px; /* Space between label and next element */
+}
+
+#info-box {
+  position: fixed; /* Fixed position relative to the viewport */
+  top: 60px;       /* Distance from the top of the viewport */
+  left: 10px;      /* Distance from the left of the viewport */
+  width: 300px;    /* Fixed width */
+  height: 150px;   /* Fixed height */
+  overflow: auto;  /* Enable scrolling for overflow content */
+  background-color: white;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  display: none;   /* Hidden by default */
+  z-index: 95;     /* Ensure it's above other elements */
 }
 
 #search-container {

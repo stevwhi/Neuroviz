@@ -24,6 +24,8 @@ class BrainModel {
         });
     }
 
+    
+
     processModel(model) {
         model.traverse((child) => {
             if (child.name === "cerebralCortex") {
@@ -73,6 +75,7 @@ class BrainModel {
                     color: color,
                     transparent: isCerebralCortex,
                     opacity: 1,
+                    
                     
                 });
                 area.material.needsUpdate = true;

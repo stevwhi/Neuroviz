@@ -42,6 +42,10 @@ class SceneSetup {
     render() {
         this.renderer.render(this.scene, this.camera);
     }
+
+    getRenderer() {
+        return this.renderer;
+    }
 }
 
 export default SceneSetup;
