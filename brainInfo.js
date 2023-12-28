@@ -12,7 +12,7 @@ const brainInfo = {
         description: "Important for processing auditory information and is also involved in memory and emotion."
     },
     occipitalLobe: {
-        title: "Occitpital Lobe",
+        title: "Occipital Lobe",
         description: "Mainly responsible for visual processing, including recognizing shapes and colors."
     },
     insularCortex: {

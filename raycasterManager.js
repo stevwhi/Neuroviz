@@ -20,32 +20,81 @@ class RaycasterManager {
         this.targetPosition = new THREE.Vector3();
         this.cameraTargetPosition = new THREE.Vector3(); 
         this.transitionSpeed = 0.075; // Adjust this value as needed
+        
+
+        this.selectedArea = null;
     }
 
     //search bar----------------------------------------------------------------------------------
     setupSearchBar() {
         const searchBar = document.getElementById('brain-area-search');
         const searchButton = document.getElementById('search-button');
-
+        const autocompleteList = document.createElement('div');
+        autocompleteList.setAttribute('id', 'autocomplete-list');
+        autocompleteList.setAttribute('class', 'autocomplete-items');
+        searchBar.parentNode.appendChild(autocompleteList);
+    
+        searchBar.addEventListener('input', (e) => {
+            const val = e.target.value;
+            closeAllLists();
+            if (!val) { return false; }
+            const normalizedInput = this.normalizeString(val);
+    
+            let suggestions = this.getAutocompleteSuggestions(normalizedInput);
+            suggestions.forEach(areaName => {
+                let item = document.createElement('div');
+                item.innerHTML = areaName;
+                item.addEventListener('click', () => {
+                    searchBar.value = areaName;
+                    closeAllLists();
+                    this.handleSearch(areaName);
+                });
+                autocompleteList.appendChild(item);
+            });
+        });
+    
+        searchButton.addEventListener('click', () => {
+            this.handleSearch(searchBar.value);
+            closeAllLists();
+        });
+    
         searchBar.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.handleSearch(e.target.value);
+                closeAllLists();
             }
         });
-
-        searchButton.addEventListener('click', () => {
-            this.handleSearch(searchBar.value);
+    
+        function closeAllLists(elmnt) {
+            var x = document.getElementById('autocomplete-list');
+            if (x) x.innerHTML = '';
+        }
+    
+        document.addEventListener('click', function (e) {
+            closeAllLists(e.target);
         });
-
-        //autocomplete logic below here
+    }
+    
+    getAutocompleteSuggestions(input) {
+        let suggestions = [];
+        // Iterate over the keys in brainInfo
+        Object.keys(brainInfo).forEach(key => {
+            const areaTitle = brainInfo[key].title;
+            if (this.normalizeString(areaTitle).includes(input)) {
+                suggestions.push(areaTitle);
+            }
+        });
+        return suggestions;
     }
 
     handleSearch(searchTerm) {
         const normalizedSearchTerm = this.normalizeString(searchTerm);
         const areaObject = this.findAreaObjectByName(normalizedSearchTerm);
+        const parentArea = this.getParentArea(areaObject);
         if (areaObject) {
-            this.focusOnArea(areaObject);
-            this.highlightIntersected(areaObject);
+            this.selectedArea = parentArea;
+            this.focusOnArea(this.selectedArea);
+            this.highlightIntersected(this.selectedArea);
         } else {
             // Show error popup if area is not found
             alert("Error: Brain area not found.");
@@ -99,56 +148,69 @@ class RaycasterManager {
         
         if (intersects.length > 0) {
             const intersected = intersects[0].object;
+
+            const parentArea = this.getParentArea(intersected);
+
             if (eventType === 'hover') {
-                this.highlightIntersected(intersected);
+                this.highlightIntersected(parentArea);
             } else if (eventType === 'click') {
-                this.focusOnArea(intersected);
+                this.selectedArea = parentArea;
+                this.highlightIntersected(this.selectedArea);
+                this.focusOnArea(this.selectedArea);
             }
         } else if (eventType === 'hover') {
             this.unhighlightAll();
         }
     }
 
+    getParentArea(mesh) {
+        return this.brainModel.cerebralCortexAreas.find(area => area.includes(mesh)) ||
+               this.brainModel.subcorticalCortexAreas.find(area => area.includes(mesh));
+    }
+
+
     highlightIntersected(intersected) {
-        // Reset previous highlights
         this.unhighlightAll();
 
-        // Find the parent area of the intersected mesh
-        const parentArea = this.brainModel.cerebralCortexAreas.find(area => area.includes(intersected)) ||
-                           this.brainModel.subcorticalCortexAreas.find(area => area.includes(intersected));
-        
-        if (parentArea) {
-            parentArea.forEach(mesh => {
-                if (mesh.isMesh) {
-                    mesh.material.color.set(0xff0000); // Highlight color
-                }
-            });
+        if (intersected) {
+            if(intersected !== this.selectedArea){
+                intersected.forEach(mesh => {
+                    if (mesh.isMesh) {
+                        mesh.material.color.set(0xADD8E6); // Highlight color
+                    }
+                });
+            }else{
+                intersected.forEach(mesh => {
+                    if (mesh.isMesh) {
+                        mesh.material.color.set(0x00ff00); // Highlight color
+                    }
+                });
+            }
         }
     }
 
     unhighlightAll() {
         this.sceneSetup.scene.traverse((object) => {
-            if (object.isMesh) {
-                object.material.color.set(this.brainModel.getBrainColour(object.name)); // Example: reset to original color
+            if (object.isMesh && this.getParentArea(object) !== this.selectedArea) {
+                object.material.color.set(this.brainModel.getBrainColour(object.name));
             }
         });
     }
 
-    focusOnArea(intersected) {
-        // Find the parent area of the intersected mesh
-        const parentArea = this.brainModel.cerebralCortexAreas.find(area => area.includes(intersected)) ||
-        this.brainModel.subcorticalCortexAreas.find(area => area.includes(intersected));
+    
 
-        if (parentArea) {
+    focusOnArea(intersected) {
+
+        if (intersected) {
             let centroid = new THREE.Vector3(0, 0, 0);
             let tempPos = new THREE.Vector3();
 
-            parentArea.forEach(mesh => {
+            intersected.forEach(mesh => {
                 mesh.getWorldPosition(tempPos); // Get the world position of each mesh
                 centroid.add(tempPos); // Add it to the centroid
             });
 
-            centroid.divideScalar(parentArea.length); // Average the position
+            centroid.divideScalar(intersected.length); // Average the position
 
             this.targetPosition.copy(centroid);
 
@@ -167,7 +229,7 @@ class RaycasterManager {
 
             // InfoBox functionality
             // The first element of the parentArea array is the area object itself
-            const areaObject = parentArea[0];
+            const areaObject = intersected[0];
             const areaName = areaObject.name; // Get the name from the area object
             const areaInfo = brainInfo[areaName]; // Fetch information based on area name
             if (areaInfo) {
