@@ -87,3 +87,10 @@
 .autocomplete-items div:hover {
   background-color: #e9e9e9; 
 }
+
+#screenshot-container {
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  /* Adjust as needed for layout */
+}

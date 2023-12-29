@@ -25,3 +25,4 @@ function animate() {
     controlsManager.update();
     sceneSetup.render();
 }
+

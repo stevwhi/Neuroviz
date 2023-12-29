@@ -215,7 +215,7 @@ class RaycasterManager {
             this.targetPosition.copy(centroid);
 
             // Use a smaller distance value, appropriate for the scale of your scene
-            const distance = 0.3; // Adjust this value based on your model's scale
+            const distance = 0.2; // Adjust this value based on your model's scale
 
             // Calculate the direction vector from the centroid towards the current camera position
             const direction = new THREE.Vector3().subVectors(this.sceneSetup.camera.position, centroid).normalize();
