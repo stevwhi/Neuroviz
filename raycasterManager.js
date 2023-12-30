@@ -199,50 +199,74 @@ class RaycasterManager {
 
     
 
-    focusOnArea(intersected) {
-
+    async focusOnArea(intersected) {
         if (intersected) {
+            // Calculate the centroid of the selected area
             let centroid = new THREE.Vector3(0, 0, 0);
             let tempPos = new THREE.Vector3();
-
             intersected.forEach(mesh => {
-                mesh.getWorldPosition(tempPos); // Get the world position of each mesh
-                centroid.add(tempPos); // Add it to the centroid
+                mesh.getWorldPosition(tempPos);
+                centroid.add(tempPos);
             });
-
-            centroid.divideScalar(intersected.length); // Average the position
-
+            centroid.divideScalar(intersected.length);
+    
+            // Update target position for camera
             this.targetPosition.copy(centroid);
-
-            // Use a smaller distance value, appropriate for the scale of your scene
-            const distance = 0.2; // Adjust this value based on your model's scale
-
-            // Calculate the direction vector from the centroid towards the current camera position
+            const distance = 0.2; // Adjust based on your scene scale
             const direction = new THREE.Vector3().subVectors(this.sceneSetup.camera.position, centroid).normalize();
-
-            // Set the new camera position
             this.cameraTargetPosition.copy(centroid).addScaledVector(direction, distance);
-
-            // Disable user interaction with orbit controls during transition
+    
+            // Disable orbit controls during transition
             this.controlsManager.controls.enabled = false;
             this.isTransitioning = true;
-
-            // InfoBox functionality
-            // The first element of the parentArea array is the area object itself
+    
+            // Fetch and display information from Wikipedia and brainInfo
             const areaObject = intersected[0];
-            const areaName = areaObject.name; // Get the name from the area object
-            const areaInfo = brainInfo[areaName]; // Fetch information based on area name
-            if (areaInfo) {
-                this.displayInfoBox(areaInfo);
+            const areaName = areaObject.name;
+            const wikipediaTitle = brainInfo[areaName].wikipediaTitle; // Use the title for Wikipedia API
+            const additionalInfo = await this.fetchWikipediaSummary(wikipediaTitle);
+            if (additionalInfo) {
+                // Combine Wikipedia info with pre-written info
+                this.displayInfoBox({
+                    title: brainInfo[areaName].title,
+                    description: `${additionalInfo.description}\n`,
+                    wikipediaLink: additionalInfo.content_urls.desktop.page
+                });
+            } else {
+                // Fallback to default info if Wikipedia fetch fails
+                this.displayInfoBox(brainInfo[areaName]);
             }
-
-        } 
+        }
     }
-
+    
     displayInfoBox(areaInfo) {
         const infoBox = document.getElementById('info-box');
-        infoBox.innerHTML = `<h1>${areaInfo.title}</h1><p>${areaInfo.description}</p>`;
+        let content = `<h1>${areaInfo.title}</h1><p>${areaInfo.description}</p>`;
+    
+        // Add a Wikipedia link if available
+        if (areaInfo.wikipediaLink) {
+            content += `<p><a href="${areaInfo.wikipediaLink}" target="_blank">Read more on Wikipedia</a></p>`;
+        }
+    
+        infoBox.innerHTML = content;
         infoBox.style.display = 'block';
+    }
+    
+    async fetchWikipediaSummary(title) {
+        const apiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            return {
+                title: data.title,
+                description: data.extract,
+                content_urls: data.content_urls // Include the URL to the Wikipedia page
+            };
+        } catch (error) {
+            console.error('Error fetching data from Wikipedia:', error);
+            return null;
+        }
     }
 
     update() {
