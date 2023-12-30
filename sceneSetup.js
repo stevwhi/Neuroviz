@@ -6,8 +6,10 @@ class SceneSetup {
         this.container = document.getElementById(containerId);
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001, 1000);
-        this.camera.position.set(0.15, 0.02, 0.2);
+        this.camera.position.set(0.1, 0, 0.15);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0)); 
+
+        
 
         this.renderer = new THREE.WebGLRenderer({ 
             antialias: true, 
