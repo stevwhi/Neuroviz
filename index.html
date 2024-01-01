@@ -40,8 +40,18 @@
           <label>Z-axis: <input type="range" id="clipZ" min="-0.09" max="0.1" step="0.001" value="0.1"></label>
         </div>
 
+        <div id="label-mode-control">
+          <input type="checkbox" id="label-mode-checkbox">
+          <label for="label-mode-checkbox">Enable Label Mode</label>
+        </div>
+
         <button id="download-screenshot">Download Screenshot</button>
     </div>
+
+    <div id="brain-label" style="position: absolute; display: none;">
+      <!-- Content will be dynamically set in JavaScript -->
+    </div>
+    
     <script type="module" src="main.js"></script>
 </body>
 </html>

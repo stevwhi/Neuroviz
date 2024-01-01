@@ -94,3 +94,32 @@
   justify-content: start;
   /* Adjust as needed for layout */
 }
+
+#brain-label {
+  /* Minimal padding for a tight fit */
+  padding: 2px 4px; 
+
+  /* Font styling adjustments */
+  font-size: 0.8em;
+  line-height: 1.2em; 
+
+  /* Semi-transparent background */
+  background-color: rgba(255, 255, 255, 0.3); 
+
+  /* Border and text alignment */
+  border: 1px solid black;
+  border-radius: 5px;
+  text-align: center;
+
+  /* Ensuring the text fits in a single line */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* Position adjustments */
+  position: absolute;
+  display: none;
+
+  /* Optional: Adding a small shadow for better readability */
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+}

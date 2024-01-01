@@ -9,8 +9,6 @@ class SceneSetup {
         this.camera.position.set(0.1, 0, 0.15);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0)); 
 
-        
-
         this.renderer = new THREE.WebGLRenderer({ 
             antialias: true, 
             alpha: true,

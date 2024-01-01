@@ -23,6 +23,9 @@ class RaycasterManager {
         
 
         this.selectedArea = null;
+
+        this.labelMode = false;
+        this.setupLabelMode();
     }
 
     //search bar----------------------------------------------------------------------------------
@@ -148,18 +151,25 @@ class RaycasterManager {
         
         if (intersects.length > 0) {
             const intersected = intersects[0].object;
-
             const parentArea = this.getParentArea(intersected);
 
-            if (eventType === 'hover') {
+            if (this.labelMode && eventType === 'hover') {
+                this.showLabel(parentArea);
+                this.highlightIntersected(parentArea);
+            } else if (!this.labelMode && eventType === 'hover') {
                 this.highlightIntersected(parentArea);
             } else if (eventType === 'click') {
+                this.showLabel(parentArea);
                 this.selectedArea = parentArea;
                 this.highlightIntersected(this.selectedArea);
                 this.focusOnArea(this.selectedArea);
             }
-        } else if (eventType === 'hover') {
-            this.unhighlightAll();
+        } else {
+            if (this.labelMode && eventType === 'hover') {
+                this.hideLabel();
+            } else if (!this.labelMode && eventType === 'hover') {
+                this.unhighlightAll();
+            }
         }
     }
 
@@ -167,6 +177,9 @@ class RaycasterManager {
         return this.brainModel.cerebralCortexAreas.find(area => area.includes(mesh)) ||
                this.brainModel.subcorticalCortexAreas.find(area => area.includes(mesh));
     }
+
+
+    //highlighting----------------------------------------------------------------------------------
 
 
     highlightIntersected(intersected) {
@@ -197,7 +210,7 @@ class RaycasterManager {
         });
     }
 
-    
+    //clicking----------------------------------------------------------------------------------
 
     async focusOnArea(intersected) {
         if (intersected) {
@@ -290,6 +303,32 @@ class RaycasterManager {
                 this.controlsManager.controls.enabled = true;
             }
         }
+    }
+
+    //label mode----------------------------------------------------------------------------------
+
+    setupLabelMode() {
+        const labelModeCheckbox = document.getElementById('label-mode-checkbox');
+        labelModeCheckbox.addEventListener('change', (e) => {
+            this.labelMode = e.target.checked;
+            if (!this.labelMode) {
+                this.hideLabel();
+            }
+        });
+    }
+
+    showLabel(parentArea) {
+        // Position the label near the mouse cursor and show information
+        const labelDiv = document.getElementById('brain-label');
+        labelDiv.style.display = 'block';
+        labelDiv.style.left = `${(this.mouse.x + 1) * window.innerWidth / 2}px`;
+        labelDiv.style.top = `${(-this.mouse.y + 1) * window.innerHeight / 2}px`;
+        labelDiv.innerHTML = `<p>${brainInfo[parentArea[0].name].title}</p>`;
+    }
+
+    hideLabel() {
+        const labelDiv = document.getElementById('brain-label');
+        labelDiv.style.display = 'none';
     }
 
 }
