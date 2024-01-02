@@ -158,8 +158,12 @@ class RaycasterManager {
                 this.highlightIntersected(parentArea);
             } else if (!this.labelMode && eventType === 'hover') {
                 this.highlightIntersected(parentArea);
-            } else if (eventType === 'click') {
+            } else if (this.labelMode && eventType === 'click') {
                 this.showLabel(parentArea);
+                this.selectedArea = parentArea;
+                this.highlightIntersected(this.selectedArea);
+                this.focusOnArea(this.selectedArea);
+            } else if (!this.labelMode && eventType === 'click'){
                 this.selectedArea = parentArea;
                 this.highlightIntersected(this.selectedArea);
                 this.focusOnArea(this.selectedArea);

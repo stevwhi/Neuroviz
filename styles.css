@@ -123,3 +123,40 @@
   /* Optional: Adding a small shadow for better readability */
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
 }
+
+
+
+
+
+
+
+
+#question-panel {
+  position: absolute;
+  top: 20px;
+  left: 320px; /* Adjust based on your layout */
+  width: 300px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 8px;
+  z-index: 100;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#question-container {
+  margin-bottom: 10px;
+}
+
+#new-question-btn, #submit-answer-btn {
+  padding: 5px 10px;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f8f8f8;
+}
+
+#answer-feedback {
+  margin-top: 10px;
+  color: #333;
+}
