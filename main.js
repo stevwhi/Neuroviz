@@ -4,11 +4,13 @@ import ControlsManager from './ControlsManager.js';
 import RaycasterManager from './RaycasterManager.js';
 import SlicerManager from './SlicerManager.js';
 import QuestionManager from './QuestionManager.js';
+import ParticleManager from './ParticleManager.js';
 
 const sceneSetup = new SceneSetup('threejs-scene-container');
 const brainModel = new BrainModel(sceneSetup.scene);
 const controlsManager = new ControlsManager(sceneSetup, brainModel);
 const raycasterManager = new RaycasterManager(sceneSetup, brainModel, controlsManager);
+const particleManager = new ParticleManager(sceneSetup.scene);
 
 brainModel.loadModel('/public/Brain/gltf/originBrain6(samesubnames2).glb').then(() => {
     animate();
@@ -24,6 +26,7 @@ function animate() {
     requestAnimationFrame(animate);
     raycasterManager.update();
     controlsManager.update();
+    particleManager.update();
     sceneSetup.render();
 }
 

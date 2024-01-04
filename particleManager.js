@@ -1,0 +1,68 @@
+import * as THREE from 'three';
+
+class ParticleManager {
+    constructor(scene) {
+        this.scene = scene;
+        this.particles = [];
+        this.directions = []; // Array to store direction vectors
+        this.initParticleSystem();
+    }
+
+    initParticleSystem() {
+        const particleCount = 15000; // Number of particles
+        const geometry = new THREE.BufferGeometry();
+        const positions = [];
+    
+        // Define a smaller range for the particles
+        const range = 750;
+    
+        for (let i = 0; i < particleCount; i++) {
+            // Random positions within a smaller range
+            positions.push((Math.random() - 0.5) * range);
+            positions.push((Math.random() - 0.5) * range);
+            positions.push((Math.random() - 0.5) * range);
+
+            // Random direction
+            this.directions.push(new THREE.Vector3(
+                (Math.random() - 0.5) * 0.1, 
+                (Math.random() - 0.5) * 0.1, 
+                (Math.random() - 0.5) * 0.1
+            ));
+        }
+    
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    
+        // Load a sparkle texture
+        const textureLoader = new THREE.TextureLoader();
+        const sparkleTexture = textureLoader.load('public/circle2.jpg'); // Replace with your texture path
+
+        const material = new THREE.PointsMaterial({ 
+            size: 0.6, // Smaller size
+            color: 0xffffff, // White color
+            map: sparkleTexture, // Add the sparkle texture
+            transparent: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending // For a glow effect
+        });
+    
+        const particleSystem = new THREE.Points(geometry, material);
+    
+        this.scene.add(particleSystem);
+        this.particles.push(particleSystem);
+    }
+
+    update() {
+        this.particles.forEach(particleSystem => {
+            const positions = particleSystem.geometry.attributes.position.array;
+            for (let i = 0, j = 0; i < positions.length; i += 3, j++) {
+                // Update positions based on direction vectors
+                positions[i] += this.directions[j].x / 2; // X
+                positions[i + 1] += this.directions[j].y / 2; // Y
+                positions[i + 2] += this.directions[j].z / 2;// Z
+            }
+            particleSystem.geometry.attributes.position.needsUpdate = true;
+        });
+    }
+}
+
+export default ParticleManager;
