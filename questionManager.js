@@ -33,13 +33,15 @@ class QuestionManager {
     }
 
     async fetchQuestion(prompt) {
+        const offlineMode = document.getElementById('offline-mode-checkbox').checked;
+        console.log('Offline mode:', offlineMode);
         // Fetch question from Flask backend
         const response = await fetch('http://localhost:5001/generate-question', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ prompt: prompt })
+            body: JSON.stringify({ prompt: prompt, offline_mode: offlineMode })
         });
         const data = await response.json();
         return data.choices ? data.choices[0].message.content : null;

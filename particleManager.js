@@ -54,11 +54,24 @@ class ParticleManager {
     update() {
         this.particles.forEach(particleSystem => {
             const positions = particleSystem.geometry.attributes.position.array;
+            const range = 750; // The same range used in initParticleSystem
+            const halfRange = range / 2;
+
             for (let i = 0, j = 0; i < positions.length; i += 3, j++) {
                 // Update positions based on direction vectors
                 positions[i] += this.directions[j].x / 2; // X
                 positions[i + 1] += this.directions[j].y / 2; // Y
-                positions[i + 2] += this.directions[j].z / 2;// Z
+                positions[i + 2] += this.directions[j].z / 2; // Z
+
+                // Wrap around if the particle goes beyond the range
+                if (positions[i] < -halfRange) positions[i] += range;
+                else if (positions[i] > halfRange) positions[i] -= range;
+
+                if (positions[i + 1] < -halfRange) positions[i + 1] += range;
+                else if (positions[i + 1] > halfRange) positions[i + 1] -= range;
+
+                if (positions[i + 2] < -halfRange) positions[i + 2] += range;
+                else if (positions[i + 2] > halfRange) positions[i + 2] -= range;
             }
             particleSystem.geometry.attributes.position.needsUpdate = true;
         });

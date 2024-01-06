@@ -242,7 +242,7 @@ class RaycasterManager {
             const areaName = areaObject.name;
             const wikipediaTitle = brainInfo[areaName].wikipediaTitle; // Use the title for Wikipedia API
             const additionalInfo = await this.fetchWikipediaSummary(wikipediaTitle);
-            if (additionalInfo) {
+            if (additionalInfo && !document.getElementById('offline-mode-checkbox').checked) {
                 // Combine Wikipedia info with pre-written info
                 this.displayInfoBox({
                     title: brainInfo[areaName].title,
