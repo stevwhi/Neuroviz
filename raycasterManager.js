@@ -328,6 +328,7 @@ class RaycasterManager {
         labelDiv.style.left = `${(this.mouse.x + 1) * window.innerWidth / 2}px`;
         labelDiv.style.top = `${(-this.mouse.y + 1) * window.innerHeight / 2}px`;
         labelDiv.innerHTML = `<p>${brainInfo[parentArea[0].name].title}</p>`;
+        
     }
 
     hideLabel() {

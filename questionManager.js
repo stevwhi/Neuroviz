@@ -7,6 +7,17 @@ class QuestionManager {
     }
 
     setupQuestionPanel() {
+        //drowpdown trigger
+        document.getElementById('question-dropdown-trigger').addEventListener('click', () => {
+            var questionPanel = document.getElementById('question-panel');
+            if (questionPanel.classList.contains('visible')) {
+                questionPanel.classList.remove('visible');
+            } else {
+                questionPanel.classList.add('visible');
+                this.generateQuestion();
+            }
+        });
+
         // Setup for the question panel, including event listeners
         document.getElementById('new-question-btn').addEventListener('click', () => {
             this.generateQuestion();
@@ -17,6 +28,15 @@ class QuestionManager {
     }
 
     async generateQuestion() {
+        
+
+        const offlineMode = document.getElementById('offline-mode-checkbox').checked;
+
+        const loadingElement = document.getElementById('loading-animation');
+        if (!offlineMode) { loadingElement.classList.remove('loading-hidden');}
+
+        document.getElementById('question-container').innerHTML = '';
+
         // Randomly select a brain part
         const randomBrainPartKey = Object.keys(brainInfo)[Math.floor(Math.random() * Object.keys(brainInfo).length)];
         // Fetch Wikipedia summary
@@ -25,15 +45,18 @@ class QuestionManager {
         if (wikipediaInfo) {
             // Create a prompt for AI
             const prompt = `Create a multiple-choice question based on this information about the ${randomBrainPartKey}: ${wikipediaInfo.description}. Format the response as: "Question: ..., Option A: ..., Option B: ..., Option C: ..., Option D: ... Correct: X."`;
-            const questionData = await this.fetchQuestion(prompt);
+            const questionData = await this.fetchQuestion(prompt, offlineMode);
             if (questionData) {
                 this.parseAndDisplayQuestion(questionData);
             }
         }
+
+        if (!offlineMode) { loadingElement.classList.add('loading-hidden');}
+        
     }
 
-    async fetchQuestion(prompt) {
-        const offlineMode = document.getElementById('offline-mode-checkbox').checked;
+    async fetchQuestion(prompt, offlineMode) {
+        
         console.log('Offline mode:', offlineMode);
         // Fetch question from Flask backend
         const response = await fetch('http://localhost:5001/generate-question', {

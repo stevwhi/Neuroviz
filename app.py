@@ -16,6 +16,8 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'  # You can choose different engines
 
+last_three_responses = []
+
 def query_openai_api(prompt):
     headers = {
         "Authorization": f"Bearer {OPENAI_API_KEY}",
@@ -51,12 +53,33 @@ def store_response(prompt, response):
     conn.close()
 
 def fetch_response():
+    global last_three_responses
+
     conn = sqlite3.connect('responses.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT response FROM api_responses ORDER BY RANDOM() LIMIT 1')
+
+    # Form a query that excludes the last three response IDs
+    query = '''
+    SELECT id, response FROM api_responses 
+    WHERE id NOT IN (?, ?, ?)
+    ORDER BY RANDOM() LIMIT 1
+    '''
+    cursor.execute(query, last_three_responses + [-1] * (3 - len(last_three_responses))) # Fill with -1 if less than 3
+    
     row = cursor.fetchone()
     conn.close()
-    return row[0] if row else None
+
+    if row:
+        response_id, response_text = row
+
+        # Update the last three responses, ensuring it only keeps the last three entries
+        last_three_responses.append(response_id)
+        if len(last_three_responses) > 3:
+            last_three_responses.pop(0)
+
+        return response_text
+
+    return None
 
 @app.route('/generate-question', methods=['POST'])
 def generate_question():

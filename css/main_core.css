@@ -1,0 +1,97 @@
+@font-face {
+    font-family: 'Starforge Regular';
+    src: url('../font/Starforge Regular.woff2') format('woff2'),
+         url('../font/Starforge Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  canvas {
+    display: block;
+  }
+  
+  #threejs-scene-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000; /* or transparent */
+    z-index: 100; /* Ensure it's below banners */
+}
+
+  
+#screenshot-container {
+    display: flex;
+    align-items: start;
+    justify-content: start;
+}
+
+
+  /*headers -------------------------------------------------------------*/
+
+  #header-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: transparent;
+    z-index: 200; /* High z-index */
+    display: flex;
+    justify-content: space-between; /* This will place the search bar on the right */
+}
+
+#logo-title-container {
+    display: flex;
+    align-items: center;
+}
+
+#logo {
+    height: 50px;
+    margin-right: 10px;
+}
+
+#header-title {
+    font-size: 60px;
+    color: white;
+    margin-left: 10px;
+}
+
+#header-search-container {
+    position: relative;
+    margin-right: 10px;
+    margin-top: 24px;
+}
+
+#vertical-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 40px; /* Adjust width as needed */
+    background-color: transparent;
+    z-index: 200; /* Ensure it's above other elements */
+    display: flex;
+    align-items: flex-start; /* Align the title towards the top of the banner */
+    justify-content: center;
+}
+
+#vertical-title {
+    transform: rotate(-90deg);
+    transform-origin: center;
+    white-space: nowrap;
+    font-size: 60px;
+    color: white;
+    margin-top: 170px; /* Adjust this value to move the title down */
+    margin-left: 25px;
+}
+
+#header-title, #vertical-title {
+    font-family: 'Starforge Regular', sans-serif; /* Fallback to sans-serif if custom font fails to load */
+}

@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neuroscience Education Tool</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body { margin: 0; }
-        canvas { display: block; }
-    </style>
+    <link rel="stylesheet" href="css/main_core.css">
+    <link rel="stylesheet" href="css/main_interactionPanel.css">
+    <link rel="stylesheet" href="css/main_infoBox.css">
+    <link rel="stylesheet" href="css/main_searchComponents.css">
+    <link rel="stylesheet" href="css/main_questionComponents.css">
 </head>
 <body>
 
@@ -17,20 +17,37 @@
         <!-- Your Three.js scene will attach to this container -->
       </div>
 
-      <div id="info-box">
+      <!-- Horizontal Header Banner -->
+      <div id="header-banner">
+        <div id="logo-title-container">
+          
+          <span id="header-title">NEUROVIZ</span>
+          <img src="public/brain.jpg.avif" alt="Logo" id="logo">
+      </div>
+      <div id="header-search-container">
+        <div id="search-container">
+          <input type="text" id="brain-area-search" placeholder="Search brain areas..." autocomplete="off">
+          <button class="button-tron-extravagant" id="search-button">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vertical Banner -->
+    <div id="vertical-banner">
+      <span id="vertical-title">neurovi</span>
+    </div>
+
+      <div class="tron-panel" id="info-box">
         <!-- Brain area information will be displayed here -->
       </div>
 
     </div>
 
-    <div id="search-container">
-      <input type="text" id="brain-area-search" placeholder="Search brain areas..." autocomplete="off">
-      <button id="search-button">Search</button>
-    </div>
+    
     
 
     <!-- Interaction panel -->
-    <div id="interaction-panel">
+    <div class="tron-panel" id="interaction-panel">
         <!-- Opacity slider for the cerebrum -->
         <input id="opacity-slider" type="range" min="0" max="1" step="0.01" value="1">
 
@@ -40,21 +57,43 @@
           <label>Z-axis: <input type="range" id="clipZ" min="-0.09" max="0.1" step="0.001" value="0.1"></label>
         </div>
 
-        <div id="label-mode-control">
+        
+        <div class="toggle-switch" id="label-mode-control">
           <input type="checkbox" id="label-mode-checkbox">
           <label for="label-mode-checkbox">Enable Label Mode</label>
         </div>
 
-        <div id="offline-mode-control">
+        <div div class="toggle-switch" id="offline-mode-control">
           <input type="checkbox" id="offline-mode-checkbox">
           <label for="offline-mode-checkbox">Enable Offline Mode</label>
         </div>
 
-        <button id="download-screenshot">Download Screenshot</button>
+        <button class="button-tron-simple" id="download-screenshot">Download Screenshot</button>
+
     </div>
 
-    <div id="question-panel">
+    <!-- Dropdown Trigger -->
+    <div class="tron-panel" id="question-dropdown-trigger">
+      <span>Test Yourself</span>
+      <button id="dropdown-arrow">▼</button>
+    </div>
+
+    <div class="tron-panel" id="question-panel">
       <button id="new-question-btn">New Question</button>
+      
+      <div id="loading-animation" class="center loading-hidden">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+      </div>
+
       <div id="question-container">
           <!-- Question and choices will be displayed here -->
       </div>
@@ -69,3 +108,6 @@
     <script type="module" src="main.js"></script>
 </body>
 </html>
+
+
+
