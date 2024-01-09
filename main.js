@@ -12,6 +12,7 @@ const controlsManager = new ControlsManager(sceneSetup, brainModel);
 const raycasterManager = new RaycasterManager(sceneSetup, brainModel, controlsManager);
 const particleManager = new ParticleManager(sceneSetup.scene);
 
+
 brainModel.loadModel('/public/Brain/gltf/originBrain6(samesubnames2).glb').then(() => {
     animate();
 });

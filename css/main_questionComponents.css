@@ -1,13 +1,12 @@
 #question-dropdown-trigger {
     position: absolute;
-    top: calc(75px + 300px + 20px); /* Adjusted to position below interaction panel */
+    top: calc(69px + 270px + 20px); /* Adjusted to position below interaction panel */
     right: 10px; /* Move to the left */
-    width: 230px;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 10px;
+    width: 220px;
+    background: transparent;
+    padding: 5px 10px 5px;
     border-radius: 8px;
-    z-index: 100;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 101;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -16,14 +15,13 @@
 
   #question-panel {
     position: absolute;
-    top: calc(75px + 300px + 60px); /* Adjusted to position below dropdown trigger */
+    top: calc(59px + 270px + 60px); /* Adjusted to position below dropdown trigger */
     right: 10px; /* Move to the left */
-    width: 230px;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 10px;
+    width: 220px;
+    background: transparent;
+    padding: 0px 10px 10px;
     border-radius: 8px;
     z-index: 100;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     display: none; /* Initially hidden */
   }
 
@@ -33,21 +31,30 @@
   
   
   #question-container {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
+  }
+
+  #question{
+    margin-top: 4px;
+    margin-bottom: 5px;
   }
   
-  #new-question-btn, #submit-answer-btn {
-    padding: 5px 10px;
-    margin-bottom: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: #f8f8f8;
-  }
+
+    #new-question-btn {
+        margin-left: 5px;
+
+    }
+
+    #submit-answer-btn {
+        margin-right: 5px;
+        margin-left: 12.5px;
+    }
   
   #answer-feedback {
-    margin-top: 10px;
+    margin-top: 8px;
     color: #333;
+    font-size: 12px;
+    margin-bottom: -7px;
   }
 
   /* loading animation ------------------------------------------------------------ */
@@ -86,4 +93,50 @@
   .loading-hidden {
     display: none;
   }
-  
+
+  /*checkboxes -------------------------------------------------------------*/
+
+  .tron-radio-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.tron-radio-option input[type="radio"] {
+    opacity: 0;
+    position: absolute;
+}
+
+.tron-radio-option .custom-radio {
+    height: 20px;
+    width: 20px;
+    min-width: 20px; /* Ensure the radio button maintains its width */
+    border-radius: 50%;
+    border: 2px solid #7DFDFE;
+    margin-right: 10px;
+    position: relative;
+    flex-shrink: 0; /* Prevent the radio button from shrinking */
+}
+
+.tron-radio-option .custom-radio::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #7DFDFE;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease;
+}
+
+input[type="radio"]:checked + .custom-radio::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.tron-radio-option:hover .custom-radio {
+    box-shadow: 0 0 8px #7DFDFE;
+}
+

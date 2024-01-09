@@ -6,10 +6,36 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'SpaceColony-Bold';
+    src: url('../font/SpaceColony-Bold.otf') format('opentype'),
+         url('../font/SpaceColony-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SpaceColony-SemiBold';
+    src: url('../font/SpaceColony-SemiBold.otf') format('opentype'),
+         url('../font/SpaceColony-SemiBold.ttf') format('truetype');
+    font-weight: 600; /* SemiBold is often around 600 weight */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SpaceGrotesk-Bold';
+    src: url('../font/SpaceGrotesk-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'SpaceGrotesk-Bold', sans-serif; /* Fallback to sans-serif if custom font fails to load */
+    font-size: 14px;
+    color: #7DFDFE;
   }
   
   canvas {

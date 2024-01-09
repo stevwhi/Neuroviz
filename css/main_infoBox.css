@@ -6,10 +6,23 @@
     max-height: calc(100vh - 70px);
     overflow-y: auto;
     background-color: transparent;
-    padding: 10px;
+    padding: 5px 10px 0px;
+    margin-top: 0px;
     border: 1px solid black;
     border-radius: 5px;
     display: none;
     z-index: 300; /* Increase z-index to be above banners */
 }
   
+#infoTitle{
+    margin-top : 10px;
+}
+
+#infoTitle{
+    margin-top : 0px;
+}
+
+#wikiButton{
+    margin-top : 0px;
+}
+

@@ -26,6 +26,7 @@ class RaycasterManager {
 
         this.labelMode = false;
         this.setupLabelMode();
+
     }
 
     //search bar----------------------------------------------------------------------------------
@@ -76,6 +77,16 @@ class RaycasterManager {
         document.addEventListener('click', function (e) {
             closeAllLists(e.target);
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+        
+            // Add event listener for closing the custom alert
+            document.getElementById('custom-alert-close').addEventListener('click', function (event) {
+                document.getElementById('custom-alert').style.display = 'none';
+                event.stopPropagation();
+            });
+        });    
+        
     }
     
     getAutocompleteSuggestions(input) {
@@ -99,10 +110,17 @@ class RaycasterManager {
             this.focusOnArea(this.selectedArea);
             this.highlightIntersected(this.selectedArea);
         } else {
-            // Show error popup if area is not found
-            alert("Error: Brain area not found.");
+            // Use custom alert
+            this.showCustomAlert("Error: Brain area not found.");
         }
     }
+
+    showCustomAlert(message) {
+        document.getElementById('custom-alert-message').textContent = message;
+        document.getElementById('custom-alert').style.display = 'flex';
+    }
+    
+    
 
 
     findAreaObjectByName(normalizedName) {
@@ -115,6 +133,9 @@ class RaycasterManager {
     normalizeString(str) {
         return str.toLowerCase().replace(/\s+/g, ''); // Convert to lower case and remove spaces
     }
+
+    
+    
 
 
     //raycasting----------------------------------------------------------------------------------
@@ -159,12 +180,18 @@ class RaycasterManager {
             } else if (!this.labelMode && eventType === 'hover') {
                 this.highlightIntersected(parentArea);
             } else if (this.labelMode && eventType === 'click') {
+                
+                    this.selectedArea = parentArea;
+            
+
                 this.showLabel(parentArea);
-                this.selectedArea = parentArea;
                 this.highlightIntersected(this.selectedArea);
                 this.focusOnArea(this.selectedArea);
             } else if (!this.labelMode && eventType === 'click'){
-                this.selectedArea = parentArea;
+             
+                    this.selectedArea = parentArea;
+               
+
                 this.highlightIntersected(this.selectedArea);
                 this.focusOnArea(this.selectedArea);
             }
@@ -182,6 +209,7 @@ class RaycasterManager {
                this.brainModel.subcorticalCortexAreas.find(area => area.includes(mesh));
     }
 
+    
 
     //highlighting----------------------------------------------------------------------------------
 
@@ -193,13 +221,13 @@ class RaycasterManager {
             if(intersected !== this.selectedArea){
                 intersected.forEach(mesh => {
                     if (mesh.isMesh) {
-                        mesh.material.color.set(0xADD8E6); // Highlight color
+                        mesh.material.color.set(0xCCF0FF); // Highlight color
                     }
                 });
             }else{
                 intersected.forEach(mesh => {
                     if (mesh.isMesh) {
-                        mesh.material.color.set(0x00ff00); // Highlight color
+                        mesh.material.color.set(0x7DFDFE); // Highlight color
                     }
                 });
             }
@@ -258,11 +286,11 @@ class RaycasterManager {
     
     displayInfoBox(areaInfo) {
         const infoBox = document.getElementById('info-box');
-        let content = `<h1>${areaInfo.title}</h1><p>${areaInfo.description}</p>`;
+        let content = `<h1 id="infoTitle">${areaInfo.title}</h1><p id="infoInfo">${areaInfo.description}</p>`;
     
-        // Add a Wikipedia link if available
+        // Add a Wikipedia button if available
         if (areaInfo.wikipediaLink) {
-            content += `<p><a href="${areaInfo.wikipediaLink}" target="_blank">Read more on Wikipedia</a></p>`;
+            content += `<p><button class="tron-button" id="wikiButton" onclick="window.open('${areaInfo.wikipediaLink}', '_blank')">Read more on Wikipedia</button></p>`;
         }
     
         infoBox.innerHTML = content;

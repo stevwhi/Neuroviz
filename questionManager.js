@@ -28,31 +28,35 @@ class QuestionManager {
     }
 
     async generateQuestion() {
-        
-
         const offlineMode = document.getElementById('offline-mode-checkbox').checked;
-
         const loadingElement = document.getElementById('loading-animation');
-        if (!offlineMode) { loadingElement.classList.remove('loading-hidden');}
-
+        if (!offlineMode) { loadingElement.classList.remove('loading-hidden'); }
+    
         document.getElementById('question-container').innerHTML = '';
-
+        document.getElementById('answer-feedback').innerHTML = '';
+    
         // Randomly select a brain part
         const randomBrainPartKey = Object.keys(brainInfo)[Math.floor(Math.random() * Object.keys(brainInfo).length)];
         // Fetch Wikipedia summary
         const wikipediaInfo = await this.raycasterManager.fetchWikipediaSummary(brainInfo[randomBrainPartKey].wikipediaTitle);
-
+    
         if (wikipediaInfo) {
             // Create a prompt for AI
-            const prompt = `Create a multiple-choice question based on this information about the ${randomBrainPartKey}: ${wikipediaInfo.description}. Format the response as: "Question: ..., Option A: ..., Option B: ..., Option C: ..., Option D: ... Correct: X."`;
+            const prompt = `Create a multiple-choice question based on this information about the ${randomBrainPartKey}: ${wikipediaInfo.description}. Format the response as: "Question: ...\n, Option A: ...\n, Option B: ...\n, Option C: ...\n, Option D: ...\n Correct: X."`;
             const questionData = await this.fetchQuestion(prompt, offlineMode);
             if (questionData) {
+                // Check if response length exceeds 250 characters
+                if (questionData.length > 300) {
+                    // Refetch question if response is too long
+                    console.log('Question too long. Refetching...');
+                    return this.generateQuestion();
+                    
+                }
                 this.parseAndDisplayQuestion(questionData);
             }
         }
-
-        if (!offlineMode) { loadingElement.classList.add('loading-hidden');}
-        
+    
+        if (!offlineMode) { loadingElement.classList.add('loading-hidden'); }
     }
 
     async fetchQuestion(prompt, offlineMode) {
@@ -101,11 +105,15 @@ class QuestionManager {
             return;
         }
     
-        // Display question and options
+        // Display question and options with labels
         questionContainer.innerHTML = `
-            <p>${question}</p>
+            <p id="question">${question}</p>
             ${options.map((option, index) => 
-                `<div><input type="radio" name="option" value="${'ABCD'[index]}"> ${option}</div>`
+                `<label class="tron-radio-option">
+                    <input type="radio" name="option" value="${'ABCD'[index]}">
+                    <span class="custom-radio"></span>
+                    ${option}
+                </label>`
             ).join('')}
         `;
     
@@ -118,11 +126,13 @@ class QuestionManager {
         const selectedOption = document.querySelector('input[name="option"]:checked');
         const userAnswer = selectedOption ? selectedOption.value : null;
         const feedbackDiv = document.getElementById('answer-feedback');
-
+    
         if (userAnswer === this.correctAnswer) {
             feedbackDiv.textContent = 'Correct!';
+            feedbackDiv.style.color = 'limegreen'; // Bright green color for correct answer
         } else {
             feedbackDiv.textContent = 'Incorrect. The correct answer is: ' + this.correctAnswer;
+            feedbackDiv.style.color = 'red'; // Bright red color for incorrect answer
         }
     }
 }

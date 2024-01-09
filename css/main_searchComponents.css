@@ -8,7 +8,10 @@
     height: 28px;
     padding: 5px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 0px;
+    font-family: 'SpaceGrotesk-Bold', sans-serif;
+    color: #7DFDFE;
+    font-size: 14px;
 }
 
 #search-button {
@@ -17,19 +20,23 @@
     padding: 5px 10px;
     margin-left: 5px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 0px;
     cursor: pointer;
+    font-family: 'SpaceGrotesk-Bold', sans-serif;
+    color: #7DFDFE;
+    font-size: 14px;
 }
   
   .autocomplete-items {
     position: absolute;
     border: 1px solid #d4d4d4;
     border-bottom: none;
-    border-top: none;
+    /*border-top: none;*/
     z-index: 99;
     top: 100%;
     left: 0;
     right: 0;
+    font-family: 'SpaceGrotesk-Bold', sans-serif;
   }
   
   .autocomplete-items div {
@@ -42,4 +49,95 @@
   .autocomplete-items div:hover {
     background-color: #e9e9e9;
   }
+
+  /*autocomplete-------------------------------------------------------------*/
+
+/* Style for the autocomplete container */
+#autocomplete-list {
+  margin-top: -16px;
+  position: absolute;
+  border: 1px solid #7DFDFE; /* Neon blue border */
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(10, 23, 55, 0.95); /* Dark background with slight transparency */
+  overflow: hidden; /* Hides the inner content overflow */
+  border-radius: 0 0 5px 5px; /* Rounded bottom corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+/* Style for each autocomplete item */
+.autocomplete-items div {
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  background-color: transparent; /* Transparent background */
+  color: #7DFDFE; /* Tron blue text color */
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+/* Hover effect for each item */
+.autocomplete-items div:hover {
+  background-color: #7DFDFE; /* Slightly brighter background on hover */
+  color: rgba(10, 23, 55, 1); /* White text on hover */
+  box-shadow: 0 0 10px #7DFDFE; /* Glowing effect */
+}
+
+/*alert-----------------------------------------------------------------------*/
+
+.custom-alert-hidden {
+  display: none;
+}
+
+#custom-alert {
+
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: hidden;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-alert-content {
+  padding: 20px;
+  background: #111;
+  border: 1px solid black;
+  color: #7DFDFE;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #7DFDFE;
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#custom-alert-close {
+  background-color: #29f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 0 5px #fff;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+#custom-alert-close:hover {
+  background-color: #7DFDFE;
+  box-shadow: 0 0 8px #fff;
+}
+
+
   

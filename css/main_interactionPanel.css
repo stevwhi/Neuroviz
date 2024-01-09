@@ -3,15 +3,24 @@
     top: 75px;
     right: 10px; /* Adjust so it doesn't overlap with the vertical banner */
     width: 230px;
-    padding: 10px;
     background: transparent;
     border-radius: 8px;
-    z-index: 100;
+    z-index: 102;
   }
   
   #opacity-slider, #clipX, #clipY, #clipZ {
     width: 100%;
     margin-bottom: 10px;
+  }
+
+  .text1 {
+    font-size: 15px;
+  }
+
+  #download-screenshot{
+    width: 100%;
+    margin-bottom: 5px;
+    font-family: 'SpaceGrotesk-Bold', sans-serif;
   }
   
   #interaction-panel label {
@@ -20,82 +29,200 @@
   }
   
   #brain-label {
-    padding: 2px 4px;
-    font-size: 0.8em;
-    line-height: 1.2em;
-    background-color: white;
-    border: 1px solid black;
-    border-radius: 5px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    position: absolute;
-    display: none;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    background-color: transparent;
+    color: #7DFDFE;
+    font-size: 15px;
+    margin-left: 20px;
+    margin-bottom: 200px
   }
   /*panels -------------------------------------------------------------*/
 
   /* Base styles for Tron-themed panels */
 .tron-panel {
     background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    border: 2px solid #29f; /* Neon-like blue border */
-    color: #29f;
-    padding: 10px;
+    border: 1px solid black;
+    color: #7DFDFE;
+    padding: 5px;
     border-radius: 5px;
     transition: all 0.3s ease;
-    box-shadow: 0 0 5px #29f; /* Subtle glow effect */
+    box-shadow: 0 0 5px #7DFDFE; /* Subtle glow effect */
     position: relative;
 }
 
 /* Hover effect */
 .tron-panel:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 10px #29f; /* Slightly increased glow on hover */
+    box-shadow: 0 0 10px #7DFDFE; /* Slightly increased glow on hover */
     color: white;
 }
 
+/*sliders -------------------------------------------------------------*/
 
-  
-  /*buttons -------------------------------------------------------------*/
-
-/* Base styles for the button */
-.button-tron-extravagant {
-    background-color: transparent;
-    border: 2px solid #29f; /* Neon-like blue color */
-    color: #29f;
-    padding: 10px 20px;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-family: 'Arial', sans-serif;
-    cursor: pointer;
+/* General Slider Styling */
+.tron-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 1px; /* Thin track */
+    background: #0bf; /* Bright Tron blue track color */
     outline: none;
-    transition: all 0.3s ease;
+    opacity: 0.6;
+    transition: background-color .2s;
     border-radius: 5px;
-    position: relative;
-    overflow: hidden;
 }
 
-/* Creates the sliding highlight effect */
-.button-tron-extravagant::after {
+/* Thumb (Slider Handle) Styling - Dynamic Animation */
+.tron-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px; 
+    height: 10px;
+    background: #7DFDFE; /* Initial color */
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #fff;
+    transition: width .3s ease, height .3s ease, background-color .3s ease;
+}
+
+.tron-slider:hover::-webkit-slider-thumb {
+    width: 15px; /* Increased width on hover */
+    height: 15px; /* Increased height on hover */
+    background: hsl(219, 68%, 64%); /* Change to white */
+    box-shadow: 0 0 10px #fff;
+}
+
+.tron-slider::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    background: #7DFDFE;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #fff;
+    transition: width .3s ease, height .3s ease, background-color .3s ease;
+}
+
+.tron-slider:hover::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: #fff;
+    box-shadow: 0 0 10px #fff;
+}
+
+/*toggle -------------------------------------------------------------*/
+
+/* Base Style for the Toggle Container */
+.tron-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Hiding the Default Checkbox */
+.tron-checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+/* Styling the Label as a Toggle Switch */
+.tron-label {
+    position: relative;
+    height: 20px;
+    width: 40px;
+    background-color: #111;
+    border-radius: 20px;
+    margin-right: 10px;
+    transition: background-color .3s ease;
+}
+
+.tron-label::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: all 0.5s ease;
+    left: 2px;
+    top: 2px;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: #7DFDFE;
+    transition: transform .3s ease, background-color .3s ease, box-shadow .3s ease;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
-/* Hover effect */
-.button-tron-extravagant:hover::after {
-    left: 100%;
+/* Toggle ON State Styles */
+.tron-checkbox:checked + .tron-label {
+    background-color: #0e8c8c;
 }
 
-.button-tron-extravagant:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 10px #29f, 0 0 20px #29f, 0 0 30px #29f; /* Enhanced glow effect */
+.tron-checkbox:checked + .tron-label::after {
+    transform: translateX(18px);
+    background-color: #fff;
+    box-shadow: 0 0 10px #fff;
+}
+
+/* Styling the Label Text */
+.toggle-text {
+    user-select: none;
+    color: #fff;
+    margin-top: -4px;
+}
+
+/* Hover effect for the whole toggle switch */
+.tron-toggle:hover .tron-label {
+    box-shadow: 0 0 8px #7DFDFE;
+}
+
+
+
+
+/*button -------------------------------------------------------------*/
+
+/* Base Style for Tron-Themed Buttons */
+.tron-button {
+    background-color: rgba(25, 123, 255, 0.25);
     color: white;
+    border: 0.1px solid rgb(0, 0, 0); /* Neon-like blue border */
+    font-size: 10px;
+    text-transform: uppercase;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 5px #7DFDFE; /* Subtle glow effect */
 }
+
+/* Hover Effect */
+.tron-button:hover {
+    background-color: rgba(25, 123, 255, 0.5); /* Slightly different blue */
+    box-shadow: 0 0 8px #7DFDFE; /* Increased glow effect */
+    transform: scale(1.02);
+}
+
+/* Complex Animation - Background Highlight Effect */
+.tron-button::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background-color: #fff;
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+    pointer-events: none; /* Ignore mouse events on the pseudo-element */
+}
+
+.tron-button:hover::before {
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0.1;
+}
+
+
+
+
+
+
+
+

@@ -8,6 +8,8 @@ class BrainModel {
         this.cerebralCortex = null;
         this.subcorticalCortex = null;
         this.cerebralCortexOpacity = 1;
+        //this.cerebralCortexColour = 0xB0A1B3;
+        this.cerebralCortexColour = 0x857887;
 
         this.cerebralCortexAreas = [];
         this.subcorticalCortexAreas = [];
@@ -69,31 +71,42 @@ class BrainModel {
 
     assignBrainColour(area, isCerebralCortex) {
         const color = this.getBrainColour(area.name);
-
-            if (area.isMesh) {
-                area.material = new THREE.MeshPhongMaterial({
-                    color: color,
-                    transparent: isCerebralCortex,
-                    opacity: 1,
-                    
-                    
-                });
-                area.material.needsUpdate = true;
+    
+        if (area.isMesh) {
+            let materialOptions = {
+                color: color,
+                transparent: isCerebralCortex,
+                opacity: 1
+            };
+    
+            // Add realistic material properties for cerebral cortex areas
+            if (isCerebralCortex) {
+                materialOptions.specular = 0x111111; // Adjust for a subtle sheen
+                materialOptions.shininess = 200; // Low shininess for a matte look
+    
+                // Optional: Add a bump map for texture
+                // Ensure you have a bump map texture available for this
+                // materialOptions.bumpMap = yourBumpMapTexture;
+                // materialOptions.bumpScale = 0.02; // Adjust the scale to fit your model
             }
+    
+            area.material = new THREE.MeshPhongMaterial(materialOptions);
+            area.material.needsUpdate = true;
+        }
     }
     
     getBrainColour(areaName) {
         
         const colors = {
-            frontalLobe: 0x555555,        
-            parietalLobe: 0x555555,       
-            temporalLobe: 0x555555,        
-            occipitalLobe: 0x555555,       
-            insularCortex: 0x555555,         
-            limbicLobe: 0x555555,          
-            basalGanglia: 0x555555,       // Dark Gray
+            frontalLobe: this.cerebralCortexColour,        
+            parietalLobe: this.cerebralCortexColour,       
+            temporalLobe: this.cerebralCortexColour,        
+            occipitalLobe: this.cerebralCortexColour,       
+            insularCortex: this.cerebralCortexColour,         
+            limbicLobe: this.cerebralCortexColour,          
+            basalGanglia: 0xB2BEB5,       // Dark Gray
             brainStem: 0xA0522D,          // Light Brown
-            cerebellum: 0x8FBC8F,         // Greenish-Gray
+            cerebellum: 0xB57F9D,         // Greenish-Gray
             commisuralFibres: 0xADD8E6,   // Light Blue
             hypothalamus: 0x800080,       // Purple
             limbicStructures: 0xFFB6C1,   // Soft Pink

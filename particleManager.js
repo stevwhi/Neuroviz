@@ -5,6 +5,7 @@ class ParticleManager {
         this.scene = scene;
         this.particles = [];
         this.directions = []; // Array to store direction vectors
+        this.particleSystem = null; // Store the particle system
         this.initParticleSystem();
     }
 
@@ -47,6 +48,7 @@ class ParticleManager {
     
         const particleSystem = new THREE.Points(geometry, material);
     
+        this.particleSystem = particleSystem; // Store the particle system
         this.scene.add(particleSystem);
         this.particles.push(particleSystem);
     }
@@ -75,6 +77,20 @@ class ParticleManager {
             }
             particleSystem.geometry.attributes.position.needsUpdate = true;
         });
+    }
+
+    // Method to hide the particle system
+    hideParticles() {
+        if (this.particleSystem) {
+            this.scene.remove(this.particleSystem); // Remove the particle system from the scene
+        }
+    }
+
+    // Method to show the particle system
+    showParticles() {
+        if (this.particleSystem && !this.scene.children.includes(this.particleSystem)) {
+            this.scene.add(this.particleSystem); // Add the particle system back to the scene
+        }
     }
 }
 
