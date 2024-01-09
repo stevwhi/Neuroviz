@@ -349,7 +349,7 @@ class RaycasterManager {
         }
 
         // Add a button to reset the selected area and camera position
-        content += `<p style="float: left;"><button class="tron-button" id="resetButton" onclick="resetView()">Deselect Area</button></p>`;
+        content += `<p style="float: left;"><button class="tron-button" id="resetButton">Deselect Area</button></p>`;
     
         infoBox.innerHTML = content;
         infoBox.style.display = 'block';

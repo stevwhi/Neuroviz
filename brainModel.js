@@ -57,12 +57,23 @@ class BrainModel {
     }
 
     setCerebralCortexOpacity(opacity) {
+        console.log(opacity);
         if (this.cerebralCortex) {
             this.cerebralCortexOpacity = opacity;
             this.cerebralCortex.traverse((descendant) => {
                 if (descendant.isMesh) {
-                    
                     descendant.material.opacity = opacity;
+    
+                    // When the opacity is 0, disable depth testing and writing
+                    if (opacity <= 0.04) {
+                        descendant.material.depthTest = false;
+                        descendant.material.depthWrite = false;
+                    } else {
+                        // Restore depth testing and writing when opacity is greater than 0
+                        descendant.material.depthTest = true;
+                        descendant.material.depthWrite = true;
+                    }
+    
                     descendant.material.needsUpdate = true;
                 }
             });
@@ -78,12 +89,15 @@ class BrainModel {
                 transparent: isCerebralCortex,
                 opacity: 1
             };
+
+            materialOptions.specular = 0x111111; // Adjust for a subtle sheen
+            materialOptions.shininess = 50;
     
             // Add realistic material properties for cerebral cortex areas
             if (isCerebralCortex) {
-                materialOptions.specular = 0x111111; // Adjust for a subtle sheen
-                materialOptions.shininess = 200; // Low shininess for a matte look
-    
+                 // Low shininess for a matte look
+                 materialOptions.specular = 0x111111; // Adjust for a subtle sheen
+                 materialOptions.shininess = 200;
                 // Optional: Add a bump map for texture
                 // Ensure you have a bump map texture available for this
                 // materialOptions.bumpMap = yourBumpMapTexture;
