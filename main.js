@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function animate() {
     requestAnimationFrame(animate);
     raycasterManager.update();
+    raycasterManager.smoothCameraTransition();
     controlsManager.update();
     particleManager.update();
     sceneSetup.render();

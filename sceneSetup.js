@@ -63,14 +63,17 @@ class SceneSetup {
         const webglDataURL = this.takeWebGLScreenshot();
         const infoBox = document.getElementById('info-box');
         const wikiButton = document.getElementById('wikiButton');
+        const resetButton = document.getElementById('resetButton');
 
         // Save the original styles of the info box and the wiki button
         const originalStyleInfoBox = infoBox.style.cssText;
         const originalDisplayWikiButton = wikiButton.style.display;
+        const originalDisplayResetButton = resetButton.style.display;
 
         // Temporarily change the background color of the info box and hide the wiki button
         infoBox.style.backgroundColor = 'black';
         wikiButton.style.display = 'none';
+        resetButton.style.display = 'none';
 
         const combineImages = (webglDataURL, htmlDataURL) => {
             const combinedCanvas = document.createElement('canvas');
@@ -113,6 +116,7 @@ class SceneSetup {
                     // Restore the original styles of the info box and the wiki button
                     infoBox.style.cssText = originalStyleInfoBox;
                     wikiButton.style.display = originalDisplayWikiButton;
+                    resetButton.style.display = originalDisplayResetButton;
                 };
             };
         };
@@ -129,15 +133,6 @@ class SceneSetup {
             wikiButton.style.display = originalDisplayWikiButton;
         });
     }
-
-
-
-
-
-
-  
-
-
 
     render() {
         this.renderer.render(this.scene, this.camera);

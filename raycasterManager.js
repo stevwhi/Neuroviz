@@ -27,6 +27,12 @@ class RaycasterManager {
         this.labelMode = false;
         this.setupLabelMode();
 
+        
+        this.originalCameraPosition = new THREE.Vector3(0.1, 0, 0.15);
+        this.originalCameraLookAt = new THREE.Vector3(0, 0, 0);
+        this.isCameraResetting = false;
+
+    
     }
 
     //search bar----------------------------------------------------------------------------------
@@ -150,6 +156,8 @@ class RaycasterManager {
             this.updateMousePosition(event);
             this.checkIntersection('click');
         });
+
+        
     }
 
     updateMousePosition(event) {
@@ -283,6 +291,53 @@ class RaycasterManager {
             }
         }
     }
+
+    smoothCameraTransition() {
+        if (!this.isCameraResetting) return;
+    
+        let factor = 0.1; // Adjust this value for speed
+    
+        // Interpolate the camera's position
+        this.sceneSetup.camera.position.lerp(this.originalCameraPosition.clone(), factor);
+    
+        // Assuming the original target is the center (0, 0, 0), modify if it's different
+        const originalTarget = new THREE.Vector3(0, 0, 0);
+        this.controlsManager.controls.target.lerp(originalTarget, factor);
+    
+        // Check if the camera and target are close to their respective targets
+        const positionThreshold = 0.001;
+        const targetThreshold = 0.001;
+        const isPositionClose = this.sceneSetup.camera.position.distanceTo(this.originalCameraPosition) < positionThreshold;
+        const isTargetClose = this.controlsManager.controls.target.distanceTo(originalTarget) < targetThreshold;
+    
+        if (isPositionClose && isTargetClose) {
+            this.isCameraResetting = false;
+    
+            // Re-enable orbit controls once the transition is complete
+            if (this.controlsManager && this.controlsManager.controls) {
+                this.controlsManager.controls.enabled = true;
+            }
+        }
+    }
+    
+
+    resetView() {
+        // Reset the selected area
+        this.selectedArea = null;
+        this.unhighlightAll();
+    
+        // Initiate the camera reset process
+        this.isCameraResetting = true;
+    
+        // Disable orbit controls during the transition
+        if (this.controlsManager && this.controlsManager.controls) {
+            this.controlsManager.controls.enabled = false;
+        }
+    
+        // Hide the info box or update its content as necessary
+        document.getElementById('info-box').style.display = 'none';
+
+    }
     
     displayInfoBox(areaInfo) {
         const infoBox = document.getElementById('info-box');
@@ -290,11 +345,19 @@ class RaycasterManager {
     
         // Add a Wikipedia button if available
         if (areaInfo.wikipediaLink) {
-            content += `<p><button class="tron-button" id="wikiButton" onclick="window.open('${areaInfo.wikipediaLink}', '_blank')">Read more on Wikipedia</button></p>`;
+            content += `<p style="float: left; margin-right: 10px;"><button class="tron-button" id="wikiButton" onclick="window.open('${areaInfo.wikipediaLink}', '_blank')">Read more on Wikipedia</button></p>`;
         }
+
+        // Add a button to reset the selected area and camera position
+        content += `<p style="float: left;"><button class="tron-button" id="resetButton" onclick="resetView()">Deselect Area</button></p>`;
     
         infoBox.innerHTML = content;
         infoBox.style.display = 'block';
+
+        // Attach an event listener to the reset button
+        document.getElementById('resetButton').addEventListener('click', () => {
+            this.resetView();
+        });
     }
     
     async fetchWikipediaSummary(title) {
