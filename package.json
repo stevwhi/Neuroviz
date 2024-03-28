@@ -1,9 +1,23 @@
 {
+  "name": "neuro-viz",
+  "version": "1.0.0",
+  "type": "module",
   "dependencies": {
     "html2canvas": "^1.4.1",
+    "sinon": "^17.0.1",
     "three": "^0.157.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.24.3",
+    "@babel/preset-env": "^7.24.3",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "node-fetch": "^3.3.2",
     "vite": "^4.5.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
   }
 }

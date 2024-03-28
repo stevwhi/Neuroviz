@@ -2,7 +2,7 @@
     position: fixed;
     top: 75px; /* Adjust if necessary */
     left: 65px; 
-    width: 255px;
+    width: 280px;
     max-height: calc(100vh - 70px);
     overflow-y: auto;
     background-color: transparent;
@@ -12,6 +12,7 @@
     border-radius: 5px;
     display: none;
     z-index: 300; /* Increase z-index to be above banners */
+    box-sizing: border-box;
 }
   
 #infoTitle{

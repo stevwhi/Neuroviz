@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 from dotenv import load_dotenv
+import logging
 
 # Load environment variables from .env file
 load_dotenv()
@@ -17,6 +18,8 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'  # You can choose different engines
 
 last_three_responses = []
+# Setup basic logging
+logging.basicConfig(level=logging.DEBUG)
 
 def query_openai_api(prompt):
     headers = {
@@ -24,12 +27,19 @@ def query_openai_api(prompt):
         "Content-Type": "application/json"
     }
     data = {
-        "model": "gpt-3.5-turbo",  # Example model
+        "model": "gpt-3.5-turbo",  
         "messages": [{"role": "user", "content": prompt}]
     }
-    response = requests.post(OPENAI_API_URL, headers=headers, json=data)
-    
-    return response.json()
+    try:
+        response = requests.post(OPENAI_API_URL, headers=headers, json=data)
+        response.raise_for_status()  # This will raise an exception for HTTP error codes
+        return response.json()
+    except requests.exceptions.HTTPError as http_err:
+        logging.error(f'HTTP error occurred: {http_err} - {response.text}')
+    except Exception as err:
+        logging.error(f'Other error occurred: {err}')
+
+    return None  # Return None if there was an issue with the request
 
 def init_db():
     conn = sqlite3.connect('responses.db')
@@ -45,12 +55,41 @@ def init_db():
     conn.commit()
     conn.close()
 
+def maintain_db_size():
+    conn = sqlite3.connect('responses.db')
+    cursor = conn.cursor()
+
+    # Check the total number of responses
+    cursor.execute('SELECT COUNT(*) FROM api_responses')
+    count = cursor.fetchone()[0]
+
+    # If more than 20, delete the oldest
+    if count > 20:
+        delete_count = count - 20
+        # Select the rowids of the rows to be deleted
+        cursor.execute('''
+            SELECT rowid FROM api_responses
+            ORDER BY timestamp ASC
+            LIMIT ?
+        ''', (delete_count,))
+        # Fetch the rowids to be deleted
+        rows_to_delete = cursor.fetchall()
+        # Delete where rowid in the list of rowids to delete
+        cursor.execute('''
+            DELETE FROM api_responses
+            WHERE rowid IN (%s)
+        ''' % ','.join('?'*len(rows_to_delete)), [row[0] for row in rows_to_delete])
+
+    conn.commit()
+    conn.close()
+
 def store_response(prompt, response):
     conn = sqlite3.connect('responses.db')
     cursor = conn.cursor()
     cursor.execute('INSERT INTO api_responses (prompt, response) VALUES (?, ?)', (prompt, response))
     conn.commit()
     conn.close()
+    maintain_db_size()
 
 def fetch_response():
     global last_three_responses
@@ -87,20 +126,19 @@ def generate_question():
         data = request.json
         prompt = data['prompt']
         
-        # Check for offline mode
         offline_mode = data.get('offline_mode', False)
         
         if not offline_mode:
-            try:
-                response = query_openai_api(prompt)
-                print(response)
+            response = query_openai_api(prompt)
+            if response:
                 store_response(prompt, response['choices'][0]['message']['content'])
                 return jsonify(response)
-            except requests.exceptions.RequestException as e:
-                print("Error querying OpenAI API:", e)
-                return jsonify({"error": "OpenAI API not accessible", "details": str(e)}), 503
+            else:
+                # Log the error if the response from OpenAI API is None
+                logging.error('Failed to get a response from the OpenAI API.')
+                return jsonify({"error": "Failed to get response from OpenAI API"}), 503
         
-        # Try fetching from database if API fails or in offline mode
+        # Offline mode logic
         stored_response = fetch_response()
         if stored_response:
             return jsonify({"choices": [{"message": {"content": stored_response}}]})
@@ -108,7 +146,7 @@ def generate_question():
             return jsonify({"error": "No response available in offline mode"}), 404
 
     except Exception as e:
-        print("An unexpected error occurred:", e)
+        logging.exception("An unexpected error occurred.")
         return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
 
 if __name__ == '__main__':

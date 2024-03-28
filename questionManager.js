@@ -49,6 +49,7 @@ class QuestionManager {
                 if (questionData.length > 300) {
                     // Refetch question if response is too long
                     console.log('Question too long. Refetching...');
+                    console.log(questionData.length);
                     return this.generateQuestion();
                     
                 }
@@ -138,3 +139,5 @@ class QuestionManager {
 }
 
 export default QuestionManager;
+
+

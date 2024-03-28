@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import brainInfo from './brainInfo';
-
+import fetch from 'node-fetch';
+import { fetchWikipediaSummary } from './fetchWikipediaSummary.js';
 class RaycasterManager {
     
     constructor(sceneSetup, brainModel, controlsManager) {
@@ -277,7 +278,7 @@ class RaycasterManager {
             const areaObject = intersected[0];
             const areaName = areaObject.name;
             const wikipediaTitle = brainInfo[areaName].wikipediaTitle; // Use the title for Wikipedia API
-            const additionalInfo = await this.fetchWikipediaSummary(wikipediaTitle);
+            const additionalInfo = await fetchWikipediaSummary(wikipediaTitle);
             if (additionalInfo && !document.getElementById('offline-mode-checkbox').checked) {
                 // Combine Wikipedia info with pre-written info
                 this.displayInfoBox({
@@ -345,7 +346,12 @@ class RaycasterManager {
     
         // Add a Wikipedia button if available
         if (areaInfo.wikipediaLink) {
-            content += `<p style="float: left; margin-right: 10px;"><button class="tron-button" id="wikiButton" onclick="window.open('${areaInfo.wikipediaLink}', '_blank')">Read more on Wikipedia</button></p>`;
+            content += `<p style="float: left; margin-right: 19px;">
+              <button class="tron-button" id="wikiButton" 
+                      onclick="event.stopPropagation(); window.open('${areaInfo.wikipediaLink}', '_blank')">
+                Read more on Wikipedia
+              </button>
+            </p>`;
         }
 
         // Add a button to reset the selected area and camera position
@@ -354,28 +360,16 @@ class RaycasterManager {
         infoBox.innerHTML = content;
         infoBox.style.display = 'block';
 
-        // Attach an event listener to the reset button
-        document.getElementById('resetButton').addEventListener('click', () => {
+
+        document.getElementById('resetButton').addEventListener('click', (event) => {
+            console.log("reset button clicked");
             this.resetView();
+            event.stopPropagation();
         });
     }
     
-    async fetchWikipediaSummary(title) {
-        const apiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
-        try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const data = await response.json();
-            return {
-                title: data.title,
-                description: data.extract,
-                content_urls: data.content_urls // Include the URL to the Wikipedia page
-            };
-        } catch (error) {
-            console.error('Error fetching data from Wikipedia:', error);
-            return null;
-        }
-    }
+    
+    //fetch wikipedia sumary()
 
     update() {
         if (this.isTransitioning) {
@@ -429,4 +423,9 @@ class RaycasterManager {
 
 }
 
+
+
 export default RaycasterManager;
+
+
+

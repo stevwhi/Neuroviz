@@ -59,7 +59,112 @@ class SceneSetup {
         return this.renderer.domElement.toDataURL('image/png');
     }
 
-    takeScreenshot() {
+    
+
+    
+    takeScreenshot(){
+        const webglDataURL = this.takeWebGLScreenshot();
+        const infoBox = document.getElementById('info-box');
+        const wikiButton = document.getElementById('wikiButton');
+        const resetButton = document.getElementById('resetButton');
+
+        // Save the original styles
+        const originalStyleInfoBox = infoBox ? infoBox.style.cssText : '';
+        const originalChildrenStyles = Array.from(infoBox.children).map(child => child.style.cssText);
+        const originalDisplayWikiButton = wikiButton ? wikiButton.style.display : '';
+        const originalDisplayResetButton = resetButton ? resetButton.style.display : '';
+
+
+        // Temporarily change styles if elements are visible
+        if (infoBox) {
+            infoBox.style.backgroundColor = 'black';
+            infoBox.style.borderRadius = '0';
+            
+
+
+        Array.from(infoBox.children).forEach(child => {
+            child.style.margin = '0';
+            child.style.padding = '0';
+
+        });
+        }
+
+        if (wikiButton) wikiButton.style.display = 'none';
+        if (resetButton) resetButton.style.display = 'none';
+
+        const restoreOriginalStyles = () => {
+            if (infoBox){
+                infoBox.style.cssText = originalStyleInfoBox;
+                Array.from(infoBox.children).forEach((child, index) => {
+                child.style.cssText = originalChildrenStyles[index];
+                });
+            } 
+            if (wikiButton) wikiButton.style.display = originalDisplayWikiButton;
+            if (resetButton) resetButton.style.display = originalDisplayResetButton;
+        };
+
+        const combineImages = (webglDataURL, htmlDataURL) => {
+            const combinedCanvas = document.createElement('canvas');
+            const context = combinedCanvas.getContext('2d');
+
+            // Set the canvas dimensions
+            combinedCanvas.width = infoBox.offsetWidth + window.innerWidth / 2;
+            combinedCanvas.height = infoBox.offsetHeight;
+
+            const webglImage = new Image();
+            webglImage.src = webglDataURL;
+            webglImage.onload = () => {
+                // Zoom out of the WebGL scene by reducing the drawing area
+                const zoomFactor = 1; // Slightly zoom out (2% reduction)
+                const sceneWidth = combinedCanvas.height * this.renderer.domElement.width / this.renderer.domElement.height * zoomFactor;
+                const xOffsetScene = infoBox.offsetWidth + (combinedCanvas.width - infoBox.offsetWidth - sceneWidth) / 2;
+                const yOffsetScene = (combinedCanvas.height - combinedCanvas.height * zoomFactor) / 2;
+
+                context.drawImage(webglImage, xOffsetScene, yOffsetScene, sceneWidth, combinedCanvas.height * zoomFactor);
+
+                const htmlImage = new Image();
+                htmlImage.src = htmlDataURL;
+                htmlImage.onload = () => {
+                    // Zoom into the info box by 2%
+                    const zoomFactorInfoBox = 1.0;
+                    const zoomedWidthInfoBox = infoBox.offsetWidth * zoomFactorInfoBox;
+                    const zoomedHeightInfoBox = combinedCanvas.height * zoomFactorInfoBox;
+                    const xOffsetInfoBox = -(zoomedWidthInfoBox - infoBox.offsetWidth) / 2;
+                    const yOffsetInfoBox = -(zoomedHeightInfoBox - combinedCanvas.height) / 2;
+
+                    context.drawImage(htmlImage, xOffsetInfoBox, yOffsetInfoBox, zoomedWidthInfoBox, zoomedHeightInfoBox);
+
+                    // Export the combined image
+                    const finalDataURL = combinedCanvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = 'screenshot.png';
+                    link.href = finalDataURL;
+                    link.click();
+                    restoreOriginalStyles(); // Restore styles after exporting image
+
+                };
+            };
+        };
+
+        if (infoBox && infoBox.offsetWidth > 0 && infoBox.offsetHeight > 0){
+            html2canvas(infoBox, {
+                useCORS: true,
+                logging: true
+            }).then(htmlCanvas => {
+                combineImages(webglDataURL, htmlCanvas.toDataURL('image/png'));
+            }).catch(error => {
+                console.error('Error taking screenshot:', error);
+                // Restore the original styles in case of an error
+                infoBox.style.cssText = originalStyleInfoBox;
+                wikiButton.style.display = originalDisplayWikiButton;
+            });
+        }
+
+        
+    }
+    
+
+    makeScreenshot() {
         const webglDataURL = this.takeWebGLScreenshot();
         const infoBox = document.getElementById('info-box');
         const wikiButton = document.getElementById('wikiButton');
@@ -121,18 +226,28 @@ class SceneSetup {
             };
         };
 
-        html2canvas(infoBox, {
-            useCORS: true,
-            logging: true
-        }).then(htmlCanvas => {
-            combineImages(webglDataURL, htmlCanvas.toDataURL('image/png'));
-        }).catch(error => {
-            console.error('Error taking screenshot:', error);
-            // Restore the original styles in case of an error
-            infoBox.style.cssText = originalStyleInfoBox;
-            wikiButton.style.display = originalDisplayWikiButton;
-        });
+        if (infoBox && infoBox.offsetWidth > 0 && infoBox.offsetHeight > 0){
+            html2canvas(infoBox, {
+                useCORS: true,
+                logging: true
+            }).then(htmlCanvas => {
+                combineImages(webglDataURL, htmlCanvas.toDataURL('image/png'));
+            }).catch(error => {
+                console.error('Error taking screenshot:', error);
+                // Restore the original styles in case of an error
+                infoBox.style.cssText = originalStyleInfoBox;
+                wikiButton.style.display = originalDisplayWikiButton;
+            });
+        }
+
+        
     }
+
+
+    
+    
+    
+    
 
     render() {
         this.renderer.render(this.scene, this.camera);
