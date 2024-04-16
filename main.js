@@ -1,5 +1,5 @@
 import SceneSetup from './SceneSetup.js';
-import BrainModel from './BrainModel.js';
+import BrainModel from './brainModel.js';
 import ControlsManager from './ControlsManager.js';
 import RaycasterManager from './raycasterManager.js';
 import SlicerManager from './SlicerManager.js';

@@ -64,12 +64,12 @@ class BrainModel {
                 if (descendant.isMesh) {
                     descendant.material.opacity = opacity;
     
-                    // When the opacity is 0, disable depth testing and writing
+                    // ghosting precaution
                     if (opacity <= 0.04) {
                         descendant.material.depthTest = false;
                         descendant.material.depthWrite = false;
                     } else {
-                        // Restore depth testing and writing when opacity is greater than 0
+                        
                         descendant.material.depthTest = true;
                         descendant.material.depthWrite = true;
                     }
@@ -90,18 +90,15 @@ class BrainModel {
                 opacity: 1
             };
 
-            materialOptions.specular = 0x111111; // Adjust for a subtle sheen
+            materialOptions.specular = 0x111111; 
             materialOptions.shininess = 50;
     
-            // Add realistic material properties for cerebral cortex areas
+            // material
             if (isCerebralCortex) {
-                 // Low shininess for a matte look
-                 materialOptions.specular = 0x111111; // Adjust for a subtle sheen
+                 
+                 materialOptions.specular = 0x111111; 
                  materialOptions.shininess = 200;
-                // Optional: Add a bump map for texture
-                // Ensure you have a bump map texture available for this
-                // materialOptions.bumpMap = yourBumpMapTexture;
-                // materialOptions.bumpScale = 0.02; // Adjust the scale to fit your model
+          
             }
     
             area.material = new THREE.MeshPhongMaterial(materialOptions);
@@ -120,7 +117,7 @@ class BrainModel {
             limbicLobe: this.cerebralCortexColour,          
             basalGanglia: 0xB2BEB5,       // Dark Gray
             brainStem: 0xA0522D,          // Light Brown
-            cerebellum: 0xB57F9D,         // Greenish-Gray
+            cerebellum: 0xB57F9D,         // Greeny Gray
             commisuralFibres: 0xADD8E6,   // Light Blue
             hypothalamus: 0x800080,       // Purple
             limbicStructures: 0xFFB6C1,   // Soft Pink
@@ -129,7 +126,7 @@ class BrainModel {
             ventricularSystem: 0x87CEEB   // Sky Blue
         };
         const colorKey = Object.keys(colors).find(key => areaName.includes(key));
-        return colorKey ? colors[colorKey] : 0x39FF14; // Use the found color or default if not found
+        return colorKey ? colors[colorKey] : 0x39FF14; 
     }
 }
 

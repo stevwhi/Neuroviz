@@ -1,5 +1,5 @@
 #search-container {
-    position: static; /* changed from absolute to static */
+    position: static; 
     z-index: 105;
 }
 
@@ -52,38 +52,38 @@
 
   /*autocomplete-------------------------------------------------------------*/
 
-/* Style for the autocomplete container */
+
 #autocomplete-list {
   margin-top: -16px;
   position: absolute;
-  border: 1px solid #7DFDFE; /* Neon blue border */
+  border: 1px solid #7DFDFE; 
   border-bottom: none;
   border-top: none;
   z-index: 99;
   top: 100%;
   left: 0;
   right: 0;
-  background: rgba(10, 23, 55, 0.95); /* Dark background with slight transparency */
-  overflow: hidden; /* Hides the inner content overflow */
-  border-radius: 0 0 5px 5px; /* Rounded bottom corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+  background: rgba(10, 23, 55, 0.95); 
+  overflow: hidden;
+  border-radius: 0 0 5px 5px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
 }
 
-/* Style for each autocomplete item */
+
 .autocomplete-items div {
   padding: 10px;
   text-align: left;
   cursor: pointer;
-  background-color: transparent; /* Transparent background */
-  color: #7DFDFE; /* Tron blue text color */
-  transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+  background-color: transparent; 
+  color: #7DFDFE; 
+  transition: background-color 0.3s, color 0.3s; 
 }
 
-/* Hover effect for each item */
+
 .autocomplete-items div:hover {
-  background-color: #7DFDFE; /* Slightly brighter background on hover */
-  color: rgba(10, 23, 55, 1); /* White text on hover */
-  box-shadow: 0 0 10px #7DFDFE; /* Glowing effect */
+  background-color: #7DFDFE; 
+  color: rgba(10, 23, 55, 1); 
+  box-shadow: 0 0 10px #7DFDFE; 
 }
 
 /*alert-----------------------------------------------------------------------*/

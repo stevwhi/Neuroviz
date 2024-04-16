@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import html2canvas from 'html2canvas'; // Ensure html2canvas is imported
+import html2canvas from 'html2canvas'; 
 
 class SceneSetup {
     constructor(containerId) {
@@ -21,7 +21,7 @@ class SceneSetup {
         this.addLights();
         this.handleWindowResize();
 
-        // Set up screenshot button listener
+       
         this.setupScreenshotListener();
     }
 
@@ -68,14 +68,14 @@ class SceneSetup {
         const wikiButton = document.getElementById('wikiButton');
         const resetButton = document.getElementById('resetButton');
 
-        // Save the original styles
+        // Save original style
         const originalStyleInfoBox = infoBox ? infoBox.style.cssText : '';
         const originalChildrenStyles = Array.from(infoBox.children).map(child => child.style.cssText);
         const originalDisplayWikiButton = wikiButton ? wikiButton.style.display : '';
         const originalDisplayResetButton = resetButton ? resetButton.style.display : '';
 
 
-        // Temporarily change styles if elements are visible
+        // Temporarily style change
         if (infoBox) {
             infoBox.style.backgroundColor = 'black';
             infoBox.style.borderRadius = '0';
@@ -107,15 +107,15 @@ class SceneSetup {
             const combinedCanvas = document.createElement('canvas');
             const context = combinedCanvas.getContext('2d');
 
-            // Set the canvas dimensions
+          
             combinedCanvas.width = infoBox.offsetWidth + window.innerWidth / 2;
             combinedCanvas.height = infoBox.offsetHeight;
 
             const webglImage = new Image();
             webglImage.src = webglDataURL;
             webglImage.onload = () => {
-                // Zoom out of the WebGL scene by reducing the drawing area
-                const zoomFactor = 1; // Slightly zoom out (2% reduction)
+                
+                const zoomFactor = 1; 
                 const sceneWidth = combinedCanvas.height * this.renderer.domElement.width / this.renderer.domElement.height * zoomFactor;
                 const xOffsetScene = infoBox.offsetWidth + (combinedCanvas.width - infoBox.offsetWidth - sceneWidth) / 2;
                 const yOffsetScene = (combinedCanvas.height - combinedCanvas.height * zoomFactor) / 2;
@@ -125,7 +125,7 @@ class SceneSetup {
                 const htmlImage = new Image();
                 htmlImage.src = htmlDataURL;
                 htmlImage.onload = () => {
-                    // Zoom into the info box by 2%
+                   
                     const zoomFactorInfoBox = 1.0;
                     const zoomedWidthInfoBox = infoBox.offsetWidth * zoomFactorInfoBox;
                     const zoomedHeightInfoBox = combinedCanvas.height * zoomFactorInfoBox;
@@ -134,13 +134,13 @@ class SceneSetup {
 
                     context.drawImage(htmlImage, xOffsetInfoBox, yOffsetInfoBox, zoomedWidthInfoBox, zoomedHeightInfoBox);
 
-                    // Export the combined image
+                  
                     const finalDataURL = combinedCanvas.toDataURL('image/png');
                     const link = document.createElement('a');
                     link.download = 'screenshot.png';
                     link.href = finalDataURL;
                     link.click();
-                    restoreOriginalStyles(); // Restore styles after exporting image
+                    restoreOriginalStyles(); 
 
                 };
             };
@@ -154,7 +154,7 @@ class SceneSetup {
                 combineImages(webglDataURL, htmlCanvas.toDataURL('image/png'));
             }).catch(error => {
                 console.error('Error taking screenshot:', error);
-                // Restore the original styles in case of an error
+               
                 infoBox.style.cssText = originalStyleInfoBox;
                 wikiButton.style.display = originalDisplayWikiButton;
             });
@@ -170,12 +170,12 @@ class SceneSetup {
         const wikiButton = document.getElementById('wikiButton');
         const resetButton = document.getElementById('resetButton');
 
-        // Save the original styles of the info box and the wiki button
+      
         const originalStyleInfoBox = infoBox.style.cssText;
         const originalDisplayWikiButton = wikiButton.style.display;
         const originalDisplayResetButton = resetButton.style.display;
 
-        // Temporarily change the background color of the info box and hide the wiki button
+      
         infoBox.style.backgroundColor = 'black';
         wikiButton.style.display = 'none';
         resetButton.style.display = 'none';
@@ -184,15 +184,15 @@ class SceneSetup {
             const combinedCanvas = document.createElement('canvas');
             const context = combinedCanvas.getContext('2d');
 
-            // Set the canvas dimensions
+        
             combinedCanvas.width = infoBox.offsetWidth + window.innerWidth / 2;
             combinedCanvas.height = infoBox.offsetHeight;
 
             const webglImage = new Image();
             webglImage.src = webglDataURL;
             webglImage.onload = () => {
-                // Zoom out of the WebGL scene by reducing the drawing area
-                const zoomFactor = 0.85; // Slightly zoom out (2% reduction)
+               
+                const zoomFactor = 0.85; 
                 const sceneWidth = combinedCanvas.height * this.renderer.domElement.width / this.renderer.domElement.height * zoomFactor;
                 const xOffsetScene = infoBox.offsetWidth + (combinedCanvas.width - infoBox.offsetWidth - sceneWidth) / 2;
                 const yOffsetScene = (combinedCanvas.height - combinedCanvas.height * zoomFactor) / 2;
@@ -202,7 +202,7 @@ class SceneSetup {
                 const htmlImage = new Image();
                 htmlImage.src = htmlDataURL;
                 htmlImage.onload = () => {
-                    // Zoom into the info box by 2%
+               
                     const zoomFactorInfoBox = 1.04;
                     const zoomedWidthInfoBox = infoBox.offsetWidth * zoomFactorInfoBox;
                     const zoomedHeightInfoBox = combinedCanvas.height * zoomFactorInfoBox;
@@ -211,14 +211,14 @@ class SceneSetup {
 
                     context.drawImage(htmlImage, xOffsetInfoBox, yOffsetInfoBox, zoomedWidthInfoBox, zoomedHeightInfoBox);
 
-                    // Export the combined image
+                   
                     const finalDataURL = combinedCanvas.toDataURL('image/png');
                     const link = document.createElement('a');
                     link.download = 'screenshot.png';
                     link.href = finalDataURL;
                     link.click();
 
-                    // Restore the original styles of the info box and the wiki button
+                    // Restore original style
                     infoBox.style.cssText = originalStyleInfoBox;
                     wikiButton.style.display = originalDisplayWikiButton;
                     resetButton.style.display = originalDisplayResetButton;
@@ -234,7 +234,7 @@ class SceneSetup {
                 combineImages(webglDataURL, htmlCanvas.toDataURL('image/png'));
             }).catch(error => {
                 console.error('Error taking screenshot:', error);
-                // Restore the original styles in case of an error
+                // Restore original style
                 infoBox.style.cssText = originalStyleInfoBox;
                 wikiButton.style.display = originalDisplayWikiButton;
             });

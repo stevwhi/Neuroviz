@@ -18,7 +18,7 @@ class QuestionManager {
             }
         });
 
-        // Setup for the question panel, including event listeners
+        
         document.getElementById('new-question-btn').addEventListener('click', () => {
             this.generateQuestion();
         });
@@ -35,17 +35,17 @@ class QuestionManager {
         document.getElementById('question-container').innerHTML = '';
         document.getElementById('answer-feedback').innerHTML = '';
     
-        // Randomly select a brain part
+        
         const randomBrainPartKey = Object.keys(brainInfo)[Math.floor(Math.random() * Object.keys(brainInfo).length)];
-        // Fetch Wikipedia summary
+       
         const wikipediaInfo = await this.raycasterManager.fetchWikipediaSummary(brainInfo[randomBrainPartKey].wikipediaTitle);
     
         if (wikipediaInfo) {
-            // Create a prompt for AI
+            // Create prompt 
             const prompt = `Create a multiple-choice question based on this information about the ${randomBrainPartKey}: ${wikipediaInfo.description}. Format the response as: "Question: ...\n, Option A: ...\n, Option B: ...\n, Option C: ...\n, Option D: ...\n Correct: X."`;
             const questionData = await this.fetchQuestion(prompt, offlineMode);
             if (questionData) {
-                // Check if response length exceeds 250 characters
+               
                 if (questionData.length > 300) {
                     // Refetch question if response is too long
                     console.log('Question too long. Refetching...');
@@ -63,7 +63,7 @@ class QuestionManager {
     async fetchQuestion(prompt, offlineMode) {
         
         console.log('Offline mode:', offlineMode);
-        // Fetch question from Flask backend
+        // Backend Fetch
         const response = await fetch('http://localhost:5001/generate-question', {
             method: 'POST',
             headers: {
@@ -81,7 +81,7 @@ class QuestionManager {
         console.log(questionData);
         const questionContainer = document.getElementById('question-container');
     
-        // Split the response into lines and filter out empty lines
+        
         const lines = questionData.split('\n').map(line => line.trim()).filter(line => line !== "");
     
         if (lines.length < 6) {
@@ -89,9 +89,9 @@ class QuestionManager {
             return;
         }
     
-        // Extract question and options
+        
         const question = lines[0];
-        const options = lines.slice(1, 5); // Assuming options are the next four lines
+        const options = lines.slice(1, 5);
         let correctAnswerLine = lines.find(line => line.startsWith("Correct:"));
     
         if (!correctAnswerLine) {
@@ -99,14 +99,14 @@ class QuestionManager {
             return;
         }
     
-        // Extract correct answer letter
+       
         let correctAnswerMatch = correctAnswerLine.match(/Correct:.*Option ([A-D])/) || correctAnswerLine.match(/Correct: ([A-D])/);
         if (!correctAnswerMatch) {
             questionContainer.innerHTML = "<p>Error generating question. Please try again.</p>";
             return;
         }
     
-        // Display question and options with labels
+        // Display question 
         questionContainer.innerHTML = `
             <p id="question">${question}</p>
             ${options.map((option, index) => 
@@ -118,22 +118,22 @@ class QuestionManager {
             ).join('')}
         `;
     
-        // Set the correct answer
+       
         this.correctAnswer = correctAnswerMatch[1];
     }
 
     checkAnswer() {
-        // Check user's answer and provide feedback
+        
         const selectedOption = document.querySelector('input[name="option"]:checked');
         const userAnswer = selectedOption ? selectedOption.value : null;
         const feedbackDiv = document.getElementById('answer-feedback');
     
         if (userAnswer === this.correctAnswer) {
             feedbackDiv.textContent = 'Correct!';
-            feedbackDiv.style.color = 'limegreen'; // Bright green color for correct answer
+            feedbackDiv.style.color = 'limegreen'; 
         } else {
             feedbackDiv.textContent = 'Incorrect. The correct answer is: ' + this.correctAnswer;
-            feedbackDiv.style.color = 'red'; // Bright red color for incorrect answer
+            feedbackDiv.style.color = 'red'; 
         }
     }
 }

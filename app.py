@@ -6,19 +6,19 @@ import requests
 from dotenv import load_dotenv
 import logging
 
-# Load environment variables from .env file
+#environment variable
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Enable Cross-Origin Resource Sharing (CORS)
+CORS(app)  
 
-# Environment variable for OpenAI API key
+
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
-OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'  # You can choose different engines
+OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'  
 
 last_three_responses = []
-# Setup basic logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 def query_openai_api(prompt):
@@ -32,14 +32,14 @@ def query_openai_api(prompt):
     }
     try:
         response = requests.post(OPENAI_API_URL, headers=headers, json=data)
-        response.raise_for_status()  # This will raise an exception for HTTP error codes
+        response.raise_for_status()  
         return response.json()
     except requests.exceptions.HTTPError as http_err:
         logging.error(f'HTTP error occurred: {http_err} - {response.text}')
     except Exception as err:
         logging.error(f'Other error occurred: {err}')
 
-    return None  # Return None if there was an issue with the request
+    return None  
 
 def init_db():
     conn = sqlite3.connect('responses.db')
@@ -59,22 +59,22 @@ def maintain_db_size():
     conn = sqlite3.connect('responses.db')
     cursor = conn.cursor()
 
-    # Check the total number of responses
+   
     cursor.execute('SELECT COUNT(*) FROM api_responses')
     count = cursor.fetchone()[0]
 
-    # If more than 20, delete the oldest
+    #more than 20 = delete oldest
     if count > 20:
         delete_count = count - 20
-        # Select the rowids of the rows to be deleted
+        
         cursor.execute('''
             SELECT rowid FROM api_responses
             ORDER BY timestamp ASC
             LIMIT ?
         ''', (delete_count,))
-        # Fetch the rowids to be deleted
+       
         rows_to_delete = cursor.fetchall()
-        # Delete where rowid in the list of rowids to delete
+        
         cursor.execute('''
             DELETE FROM api_responses
             WHERE rowid IN (%s)
@@ -97,13 +97,13 @@ def fetch_response():
     conn = sqlite3.connect('responses.db')
     cursor = conn.cursor()
 
-    # Form a query that excludes the last three response IDs
+
     query = '''
     SELECT id, response FROM api_responses 
     WHERE id NOT IN (?, ?, ?)
     ORDER BY RANDOM() LIMIT 1
     '''
-    cursor.execute(query, last_three_responses + [-1] * (3 - len(last_three_responses))) # Fill with -1 if less than 3
+    cursor.execute(query, last_three_responses + [-1] * (3 - len(last_three_responses))) 
     
     row = cursor.fetchone()
     conn.close()
@@ -111,7 +111,7 @@ def fetch_response():
     if row:
         response_id, response_text = row
 
-        # Update the last three responses, ensuring it only keeps the last three entries
+       
         last_three_responses.append(response_id)
         if len(last_three_responses) > 3:
             last_three_responses.pop(0)
@@ -134,11 +134,11 @@ def generate_question():
                 store_response(prompt, response['choices'][0]['message']['content'])
                 return jsonify(response)
             else:
-                # Log the error if the response from OpenAI API is None
+                
                 logging.error('Failed to get a response from the OpenAI API.')
                 return jsonify({"error": "Failed to get response from OpenAI API"}), 503
         
-        # Offline mode logic
+        
         stored_response = fetch_response()
         if stored_response:
             return jsonify({"choices": [{"message": {"content": stored_response}}]})

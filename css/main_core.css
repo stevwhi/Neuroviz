@@ -33,7 +33,7 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'SpaceGrotesk-Bold', sans-serif; /* Fallback to sans-serif if custom font fails to load */
+    font-family: 'SpaceGrotesk-Bold', sans-serif; 
     font-size: 14px;
     color: #7DFDFE;
   }
@@ -68,9 +68,9 @@ body {
     left: 0;
     right: 0;
     background-color: transparent;
-    z-index: 200; /* High z-index */
+    z-index: 200;
     display: flex;
-    justify-content: space-between; /* This will place the search bar on the right */
+    justify-content: space-between; 
 }
 
 #logo-title-container {
@@ -100,11 +100,11 @@ body {
     top: 0;
     left: 0;
     height: 100vh;
-    width: 40px; /* Adjust width as needed */
+    width: 40px; 
     background-color: transparent;
-    z-index: 200; /* Ensure it's above other elements */
+    z-index: 200; 
     display: flex;
-    align-items: flex-start; /* Align the title towards the top of the banner */
+    align-items: flex-start; 
     justify-content: center;
 }
 
@@ -114,10 +114,10 @@ body {
     white-space: nowrap;
     font-size: 60px;
     color: white;
-    margin-top: 170px; /* Adjust this value to move the title down */
+    margin-top: 170px; 
     margin-left: 25px;
 }
 
 #header-title, #vertical-title {
-    font-family: 'Starforge Regular', sans-serif; /* Fallback to sans-serif if custom font fails to load */
+    font-family: 'Starforge Regular', sans-serif; 
 }

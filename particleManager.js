@@ -4,21 +4,21 @@ class ParticleManager {
     constructor(scene) {
         this.scene = scene;
         this.particles = [];
-        this.directions = []; // Array to store direction vectors
-        this.particleSystem = null; // Store the particle system
+        this.directions = []; 
+        this.particleSystem = null; 
         this.initParticleSystem();
     }
 
     initParticleSystem() {
-        const particleCount = 15000; // Number of particles
+        const particleCount = 15000; 
         const geometry = new THREE.BufferGeometry();
         const positions = [];
     
-        // Define a smaller range for the particles
+        // particle range
         const range = 750;
     
         for (let i = 0; i < particleCount; i++) {
-            // Random positions within a smaller range
+            // Random position
             positions.push((Math.random() - 0.5) * range);
             positions.push((Math.random() - 0.5) * range);
             positions.push((Math.random() - 0.5) * range);
@@ -33,22 +33,22 @@ class ParticleManager {
     
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     
-        // Load a sparkle texture
+        // sparkle texture
         const textureLoader = new THREE.TextureLoader();
-        const sparkleTexture = textureLoader.load('public/circle2.jpg'); // Replace with your texture path
+        const sparkleTexture = textureLoader.load('public/circle2.jpg'); 
 
         const material = new THREE.PointsMaterial({ 
-            size: 0.6, // Smaller size
-            color: 0xffffff, // White color
-            map: sparkleTexture, // Add the sparkle texture
+            size: 0.6, 
+            color: 0xffffff, 
+            map: sparkleTexture, 
             transparent: true,
             depthWrite: false,
-            blending: THREE.AdditiveBlending // For a glow effect
+            blending: THREE.AdditiveBlending 
         });
     
         const particleSystem = new THREE.Points(geometry, material);
     
-        this.particleSystem = particleSystem; // Store the particle system
+        this.particleSystem = particleSystem; 
         this.scene.add(particleSystem);
         this.particles.push(particleSystem);
     }
@@ -56,16 +56,16 @@ class ParticleManager {
     update() {
         this.particles.forEach(particleSystem => {
             const positions = particleSystem.geometry.attributes.position.array;
-            const range = 750; // The same range used in initParticleSystem
+            const range = 750; 
             const halfRange = range / 2;
 
             for (let i = 0, j = 0; i < positions.length; i += 3, j++) {
-                // Update positions based on direction vectors
-                positions[i] += this.directions[j].x / 2; // X
-                positions[i + 1] += this.directions[j].y / 2; // Y
+                // Update positions
+                positions[i] += this.directions[j].x / 2; 
+                positions[i + 1] += this.directions[j].y / 2; 
                 positions[i + 2] += this.directions[j].z / 2; // Z
 
-                // Wrap around if the particle goes beyond the range
+                // Wrap around 
                 if (positions[i] < -halfRange) positions[i] += range;
                 else if (positions[i] > halfRange) positions[i] -= range;
 
@@ -79,17 +79,17 @@ class ParticleManager {
         });
     }
 
-    // Method to hide the particle system
+    
     hideParticles() {
         if (this.particleSystem) {
-            this.scene.remove(this.particleSystem); // Remove the particle system from the scene
+            this.scene.remove(this.particleSystem); 
         }
     }
 
-    // Method to show the particle system
+    
     showParticles() {
         if (this.particleSystem && !this.scene.children.includes(this.particleSystem)) {
-            this.scene.add(this.particleSystem); // Add the particle system back to the scene
+            this.scene.add(this.particleSystem); 
         }
     }
 }

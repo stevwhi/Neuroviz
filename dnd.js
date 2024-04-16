@@ -1,14 +1,14 @@
 const fileInput = document.getElementById('fileInput');
 const dropZone = document.getElementById('uploadArea');
 
-// Prevent default behaviour
+
 ['drop', 'dragleave', 'dragover', 'dragenter'].forEach(event => {
 
     dropZone.addEventListener(event, preventDefaults);
     document.body.addEventListener(event, preventDefaults);
 });
 
-// Highlighting
+
 ['dragover', 'dragenter'].forEach(event => {
 
     dropZone.addEventListener(event, highlight);
@@ -49,5 +49,5 @@ function handleFileDrop(e) {
 }
 
 function handleFile(file) {
-    console.log(file); //temporary method
+    console.log(file); 
 }

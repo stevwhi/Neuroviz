@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 import brainInfo from './brainInfo';
-import fetch from 'node-fetch';
-import { fetchWikipediaSummary } from './fetchWikipediaSummary.js';
 class RaycasterManager {
     
     constructor(sceneSetup, brainModel, controlsManager) {
@@ -10,7 +8,7 @@ class RaycasterManager {
         this.controlsManager = controlsManager;
         
 
-        //search bar
+        
         this.setupSearchBar();
         
         //raycasting
@@ -20,7 +18,7 @@ class RaycasterManager {
         this.isTransitioning = false;
         this.targetPosition = new THREE.Vector3();
         this.cameraTargetPosition = new THREE.Vector3(); 
-        this.transitionSpeed = 0.075; // Adjust this value as needed
+        this.transitionSpeed = 0.075; 
         
 
         this.selectedArea = null;
@@ -87,7 +85,7 @@ class RaycasterManager {
 
         document.addEventListener('DOMContentLoaded', function () {
         
-            // Add event listener for closing the custom alert
+            
             document.getElementById('custom-alert-close').addEventListener('click', function (event) {
                 document.getElementById('custom-alert').style.display = 'none';
                 event.stopPropagation();
@@ -98,7 +96,7 @@ class RaycasterManager {
     
     getAutocompleteSuggestions(input) {
         let suggestions = [];
-        // Iterate over the keys in brainInfo
+        
         Object.keys(brainInfo).forEach(key => {
             const areaTitle = brainInfo[key].title;
             if (this.normalizeString(areaTitle).includes(input)) {
@@ -117,7 +115,7 @@ class RaycasterManager {
             this.focusOnArea(this.selectedArea);
             this.highlightIntersected(this.selectedArea);
         } else {
-            // Use custom alert
+           
             this.showCustomAlert("Error: Brain area not found.");
         }
     }
@@ -136,7 +134,7 @@ class RaycasterManager {
         return foundArea ? foundArea[0] : null;
     }
 
-    // New utility method to normalize strings
+    
     normalizeString(str) {
         return str.toLowerCase().replace(/\s+/g, ''); // Convert to lower case and remove spaces
     }
@@ -169,10 +167,10 @@ class RaycasterManager {
     checkIntersection(eventType) {
         this.raycaster.setFromCamera(this.mouse, this.sceneSetup.camera);
     
-        // Always include subcortical areas
+       
         let meshes = [...this.brainModel.subcorticalCortexAreas.flat()];
 
-        // Conditionally include cerebral cortex areas based on opacity
+      
         if (this.brainModel.cerebralCortexOpacity >= 0.5) {
             meshes.push(...this.brainModel.cerebralCortexAreas.flat());
         }
@@ -230,13 +228,13 @@ class RaycasterManager {
             if(intersected !== this.selectedArea){
                 intersected.forEach(mesh => {
                     if (mesh.isMesh) {
-                        mesh.material.color.set(0xCCF0FF); // Highlight color
+                        mesh.material.color.set(0xCCF0FF); 
                     }
                 });
             }else{
                 intersected.forEach(mesh => {
                     if (mesh.isMesh) {
-                        mesh.material.color.set(0x7DFDFE); // Highlight color
+                        mesh.material.color.set(0x7DFDFE); 
                     }
                 });
             }
@@ -255,7 +253,7 @@ class RaycasterManager {
 
     async focusOnArea(intersected) {
         if (intersected) {
-            // Calculate the centroid of the selected area
+            
             let centroid = new THREE.Vector3(0, 0, 0);
             let tempPos = new THREE.Vector3();
             intersected.forEach(mesh => {
@@ -264,30 +262,30 @@ class RaycasterManager {
             });
             centroid.divideScalar(intersected.length);
     
-            // Update target position for camera
+            // Update target 
             this.targetPosition.copy(centroid);
-            const distance = 0.2; // Adjust based on your scene scale
+            const distance = 0.2; 
             const direction = new THREE.Vector3().subVectors(this.sceneSetup.camera.position, centroid).normalize();
             this.cameraTargetPosition.copy(centroid).addScaledVector(direction, distance);
     
-            // Disable orbit controls during transition
+            
             this.controlsManager.controls.enabled = false;
             this.isTransitioning = true;
     
-            // Fetch and display information from Wikipedia and brainInfo
+            
             const areaObject = intersected[0];
             const areaName = areaObject.name;
-            const wikipediaTitle = brainInfo[areaName].wikipediaTitle; // Use the title for Wikipedia API
-            const additionalInfo = await fetchWikipediaSummary(wikipediaTitle);
+            const wikipediaTitle = brainInfo[areaName].wikipediaTitle; 
+            const additionalInfo = await this.fetchWikipediaSummary(wikipediaTitle);
             if (additionalInfo && !document.getElementById('offline-mode-checkbox').checked) {
-                // Combine Wikipedia info with pre-written info
+                
                 this.displayInfoBox({
                     title: brainInfo[areaName].title,
                     description: `${additionalInfo.description}\n`,
                     wikipediaLink: additionalInfo.content_urls.desktop.page
                 });
             } else {
-                // Fallback to default info if Wikipedia fetch fails
+                
                 this.displayInfoBox(brainInfo[areaName]);
             }
         }
@@ -296,16 +294,16 @@ class RaycasterManager {
     smoothCameraTransition() {
         if (!this.isCameraResetting) return;
     
-        let factor = 0.1; // Adjust this value for speed
+        let factor = 0.1; 
     
-        // Interpolate the camera's position
+        
         this.sceneSetup.camera.position.lerp(this.originalCameraPosition.clone(), factor);
     
-        // Assuming the original target is the center (0, 0, 0), modify if it's different
+        
         const originalTarget = new THREE.Vector3(0, 0, 0);
         this.controlsManager.controls.target.lerp(originalTarget, factor);
     
-        // Check if the camera and target are close to their respective targets
+        
         const positionThreshold = 0.001;
         const targetThreshold = 0.001;
         const isPositionClose = this.sceneSetup.camera.position.distanceTo(this.originalCameraPosition) < positionThreshold;
@@ -314,7 +312,7 @@ class RaycasterManager {
         if (isPositionClose && isTargetClose) {
             this.isCameraResetting = false;
     
-            // Re-enable orbit controls once the transition is complete
+            
             if (this.controlsManager && this.controlsManager.controls) {
                 this.controlsManager.controls.enabled = true;
             }
@@ -323,19 +321,19 @@ class RaycasterManager {
     
 
     resetView() {
-        // Reset the selected area
+        
         this.selectedArea = null;
         this.unhighlightAll();
     
-        // Initiate the camera reset process
+       
         this.isCameraResetting = true;
     
-        // Disable orbit controls during the transition
+        
         if (this.controlsManager && this.controlsManager.controls) {
             this.controlsManager.controls.enabled = false;
         }
     
-        // Hide the info box or update its content as necessary
+        
         document.getElementById('info-box').style.display = 'none';
 
     }
@@ -344,7 +342,7 @@ class RaycasterManager {
         const infoBox = document.getElementById('info-box');
         let content = `<h1 id="infoTitle">${areaInfo.title}</h1><p id="infoInfo">${areaInfo.description}</p>`;
     
-        // Add a Wikipedia button if available
+        
         if (areaInfo.wikipediaLink) {
             content += `<p style="float: left; margin-right: 19px;">
               <button class="tron-button" id="wikiButton" 
@@ -354,7 +352,7 @@ class RaycasterManager {
             </p>`;
         }
 
-        // Add a button to reset the selected area and camera position
+        
         content += `<p style="float: left;"><button class="tron-button" id="resetButton">Deselect Area</button></p>`;
     
         infoBox.innerHTML = content;
@@ -369,26 +367,43 @@ class RaycasterManager {
     }
     
     
-    //fetch wikipedia sumary()
+    async fetchWikipediaSummary(title) {
+        const apiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            return {
+                title: data.title,
+                description: data.extract,
+                content_urls: data.content_urls // Include the URL to the Wikipedia page
+            };
+        } catch (error) {
+            console.error('Error fetching data from Wikipedia:', error);
+            return null;
+        }
+    }
+
+
 
     update() {
         if (this.isTransitioning) {
-            // Interpolate the target position of the controls
+            
             this.controlsManager.controls.target.lerp(this.targetPosition, this.transitionSpeed);
 
-            // Interpolate the camera position
+            // Interpolate 
             this.sceneSetup.camera.position.lerp(this.cameraTargetPosition, this.transitionSpeed);
-            this.sceneSetup.camera.lookAt(this.controlsManager.controls.target); // Ensure the camera is always looking at the target
+            this.sceneSetup.camera.lookAt(this.controlsManager.controls.target); 
 
             this.controlsManager.controls.update();
 
-            // Check if the transition is complete
+            // Check if complete
             const isTargetClose = this.controlsManager.controls.target.distanceTo(this.targetPosition) < 0.01;
             const isCameraClose = this.sceneSetup.camera.position.distanceTo(this.cameraTargetPosition) < 0.01;
             if (isTargetClose && isCameraClose) {
                 this.isTransitioning = false;
 
-                // Re-enable user interaction with orbit controls
+                
                 this.controlsManager.controls.enabled = true;
             }
         }
@@ -407,7 +422,7 @@ class RaycasterManager {
     }
 
     showLabel(parentArea) {
-        // Position the label near the mouse cursor and show information
+        
         const labelDiv = document.getElementById('brain-label');
         labelDiv.style.display = 'block';
         labelDiv.style.left = `${(this.mouse.x + 1) * window.innerWidth / 2}px`;

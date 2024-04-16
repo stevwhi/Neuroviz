@@ -1,7 +1,7 @@
 #question-dropdown-trigger {
     position: absolute;
-    top: calc(69px + 270px + 20px); /* Adjusted to position below interaction panel */
-    right: 10px; /* Move to the left */
+    top: calc(69px + 270px + 20px); 
+    right: 10px; 
     width: 220px;
     background: transparent;
     padding: 5px 10px 5px;
@@ -15,14 +15,14 @@
 
   #question-panel {
     position: absolute;
-    top: calc(59px + 270px + 60px); /* Adjusted to position below dropdown trigger */
-    right: 10px; /* Move to the left */
+    top: calc(59px + 270px + 60px); 
+    right: 10px; 
     width: 220px;
     background: transparent;
     padding: 0px 10px 10px;
     border-radius: 8px;
     z-index: 100;
-    display: none; /* Initially hidden */
+    display: none; 
   }
 
   #question-panel.visible {
@@ -111,12 +111,12 @@
 .tron-radio-option .custom-radio {
     height: 20px;
     width: 20px;
-    min-width: 20px; /* Ensure the radio button maintains its width */
+    min-width: 20px; 
     border-radius: 50%;
     border: 2px solid #7DFDFE;
     margin-right: 10px;
     position: relative;
-    flex-shrink: 0; /* Prevent the radio button from shrinking */
+    flex-shrink: 0; 
 }
 
 .tron-radio-option .custom-radio::after {
